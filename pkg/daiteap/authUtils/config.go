@@ -1,4 +1,4 @@
-package utils
+package authUtils
 
 import (
 	"encoding/json"
@@ -64,57 +64,27 @@ func SaveConfig(cfg *IConfig) error {
 	return nil
 }
 
-func SaveToken(token string) error {
+func GetConfig() (IConfig, error) {
 	cfgDir, err := getConfigLocation()
 	if err != nil {
-		return err
-	}
-
-	file := fmt.Sprintf("%s/%s", cfgDir, "config.json")
-
-	var cfg *IConfig = &IConfig{
-		AccessToken: token,
-	}
-
-	data, err := json.MarshalIndent(&cfg, "", "  ")
-	if err != nil {
-		return fmt.Errorf("%v: %w", "unable to marshal config", err)
-	}
-
-	if _, err = os.Stat(cfgDir); os.IsNotExist(err) {
-		err = os.Mkdir(cfgDir, 0o700)
-		if err != nil {
-			return err
-		}
-	}
-	err = ioutil.WriteFile(file, data, 0o600)
-	if err != nil {
-		return fmt.Errorf("%v: %w", "unable to save config", err)
-	}
-	return nil
-}
-
-func GetToken() (string, error) {
-	cfgDir, err := getConfigLocation()
-	if err != nil {
-		return "", err
+		return IConfig{}, err
 	}
 
 	file := fmt.Sprintf("%s/%s", cfgDir, "config.json")
 
 	content, err := ioutil.ReadFile(file)
 	if err != nil {
-		return "", fmt.Errorf("%v: %w", "unable to save config", err)
+		return IConfig{}, fmt.Errorf("%v: %w", "unable to read config", err)
 	}
 
 	var f interface{}
 	json.Unmarshal(content, &f)
 	m := f.(map[string]interface{})
 
-	var cfg *IConfig = &IConfig{
+	var cfg IConfig = IConfig{
 		AccessToken:  m["access_token"].(string),
 		RefreshToken: m["refresh_token"].(string),
 	}
 
-	return cfg.AccessToken, nil
+	return cfg, nil
 }

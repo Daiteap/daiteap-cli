@@ -1,4 +1,4 @@
-package utils
+package authUtils
 
 import (
 	"fmt"
@@ -29,5 +29,23 @@ func BuildTokenExchangeRequest(config Config, code string) (*http.Request, error
 
 	req, err := http.NewRequest("POST", tokenURL, strings.NewReader(body.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	return req, err
+}
+
+func BuildRefreshRequest(keycloakConfig KeycloakConfig, refreshToken string) (*http.Request, error) {
+	refreshURL := fmt.Sprintf(
+		"%v/realms/%v/protocol/openid-connect/token",
+		keycloakConfig.KeycloakURL,
+		keycloakConfig.Realm,
+	)
+
+	form := url.Values{}
+	form.Add("grant_type", "refresh_token")
+	form.Add("refresh_token", refreshToken)
+	form.Add("client_id", keycloakConfig.ClientID)
+
+	req, err := http.NewRequest("POST", refreshURL, strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
 	return req, err
 }

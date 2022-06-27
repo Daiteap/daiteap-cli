@@ -1,4 +1,4 @@
-package utils
+package authUtils
 
 import (
 	_ "embed"
@@ -12,6 +12,9 @@ import (
 	"os/exec"
 	"runtime"
 	"sync"
+	"strings"
+	"encoding/base64"
+	"time"
 )
 
 //go:embed static/success.html
@@ -87,7 +90,6 @@ func StartServer(config Config) {
 							}
 
 							SaveConfig(cfg)
-							fmt.Println("Successfully Logged In...")
 						default:
 							fmt.Println(body)
 						}
@@ -102,10 +104,79 @@ func StartServer(config Config) {
 	})
 
 	go func() {
-		log.Print("Booting up the server")
 		if err := http.ListenAndServe(serverAddress, nil); err != nil {
 			log.Fatalf("Unable to start server: %v\n", err)
 			CloseApp.Done()
 		}
 	}()
+}
+
+func IsTokenExpired (token *string) (bool, error) {
+	encodedTokenPayload := strings.Split(*token, ".")[1]
+
+	if len(encodedTokenPayload) % 3 == 1 {
+		encodedTokenPayload += "=="
+	} else if len(encodedTokenPayload) % 3 == 2 {
+		encodedTokenPayload += "="
+	}
+
+	tokenPayload, _ := base64.StdEncoding.DecodeString(encodedTokenPayload)
+
+	var jsonMap map[string]interface{}
+	json.Unmarshal(tokenPayload, &jsonMap)
+
+	exp := int64(jsonMap["exp"].(float64))
+	now := int64(time.Now().Unix())
+
+	if exp - now < 10 {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func RefreshAccessToken (config *Config) error {
+	authConfig, err := GetConfig()
+
+	if err != nil {
+		err := fmt.Errorf("Error getting authentication config")
+		return err
+	}
+
+	request, _ := BuildRefreshRequest(config.KeycloakConfig, authConfig.RefreshToken)
+
+	if err != nil {
+		err := fmt.Errorf("Error building refresh token request")
+		return err
+	}
+
+	var resp *http.Response
+	var body []byte
+	resp, _ = http.DefaultClient.Do(request)
+	body, _ = ioutil.ReadAll(io.LimitReader(resp.Body, 1<<20))
+	defer resp.Body.Close()
+	if resp.StatusCode == 200 {
+		content, _, _ := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		switch content {
+		case "application/json":
+			var f interface{}
+			json.Unmarshal(body, &f)
+			m := f.(map[string]interface{})
+
+			authConfig.AccessToken = m["access_token"].(string)
+
+			err := SaveConfig(&authConfig)
+			if err != nil {
+				return err
+			}
+		default:
+			err := fmt.Errorf("invalid Content type")
+			return err
+		}
+	} else {
+		err := fmt.Errorf("invalid Status code (%v), (%v)", resp.StatusCode, string(body))
+		return err
+	}
+
+	return nil
 }
