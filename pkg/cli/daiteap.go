@@ -8,13 +8,13 @@ import (
 	"net/http"
 	"encoding/json"
 
-	"github.com/Daiteap-D2C/daiteap/pkg/daiteap/authUtils"
+	"github.com/Daiteap-D2C/cli/pkg/cli/authUtils"
 )
 
 func GetActiveToken () (string, error) {
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "http://localhost:8090/auth",
+			KeycloakURL: "https://stg.daiteap.com/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -62,7 +62,7 @@ func Login () error {
 	authUtils.CloseApp.Add(1)
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "http://localhost:8090/auth",
+			KeycloakURL: "https://stg.daiteap.com/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -88,7 +88,7 @@ func SendDaiteapRequest (method string, endpoint string, requestBody string) (ma
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
-	daiteapServerURL := "http://localhost:8090/server"
+	daiteapServerURL := "https://stg.daiteap.com/server"
 	URL := fmt.Sprintf("%v" + endpoint, daiteapServerURL)
 
 	token, err := GetActiveToken()

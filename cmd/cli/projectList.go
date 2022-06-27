@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"encoding/json"
 
-	"github.com/Daiteap-D2C/daiteap/pkg/daiteap"
+	"github.com/Daiteap-D2C/cli/pkg/cli"
 	"github.com/spf13/cobra"
 )
 
@@ -23,12 +23,12 @@ var projectListCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			output, _ := json.Marshal(responseBody)
+			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}
     },
 }
 
 func init() {
-    projectCmd.AddCommand(projectListCmd)
+	projectCmd.AddCommand(projectListCmd)
 }

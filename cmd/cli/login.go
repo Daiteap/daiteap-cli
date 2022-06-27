@@ -3,7 +3,7 @@ package daiteap
 import (
 	"fmt"
 
-	"github.com/Daiteap-D2C/daiteap/pkg/daiteap"
+	"github.com/Daiteap-D2C/cli/pkg/cli"
 	"github.com/spf13/cobra"
 )
 
