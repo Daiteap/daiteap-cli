@@ -24,12 +24,18 @@ func GetActiveToken () (string, error) {
 		},
 	}
 	authConfig, err := authUtils.GetConfig()
+
+	if err != nil {
+		err := fmt.Errorf("Error reading token. Please login again.")
+		return "", err
+	}
+
 	accessToken := authConfig.AccessToken
 	refreshToken := authConfig.RefreshToken
 	expired, err := authUtils.IsTokenExpired(&accessToken)
 
 	if err != nil {
-		err := fmt.Errorf("Error reading token")
+		err := fmt.Errorf("Error reading token. Please login again.")
 		return "", err
 	}
 
@@ -37,7 +43,7 @@ func GetActiveToken () (string, error) {
 		expired, err = authUtils.IsTokenExpired(&refreshToken)
 
 		if err != nil {
-			err := fmt.Errorf("Error reading token")
+			err := fmt.Errorf("Error reading token. Please login again.")
 			return "", err
 		}
 
@@ -48,7 +54,7 @@ func GetActiveToken () (string, error) {
 
 		err = authUtils.RefreshAccessToken(&config)
 		if err != nil {
-			err := fmt.Errorf("Error refreshing accessToken")
+			err := fmt.Errorf("Error refreshing accessToken. Please login again.")
 			return "", err
 		}
 		authConfig, err = authUtils.GetConfig()
