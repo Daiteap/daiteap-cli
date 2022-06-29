@@ -1,9 +1,9 @@
-package daiteap
+package daiteapcli
 
 import (
 	"fmt"
 
-	"github.com/Daiteap-D2C/cli/pkg/cli"
+	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +15,7 @@ var loginCmd = &cobra.Command{
     Short:  "Command to login and get required credentials",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
-		err := daiteap.Login()
+		err := daiteapcli.Login()
 
 		if err != nil {
 			fmt.Println(err)

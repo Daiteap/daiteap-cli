@@ -1,24 +1,24 @@
-package daiteap
+package daiteapcli
 
 import (
 	"fmt"
 	"encoding/json"
 
-	"github.com/Daiteap-D2C/cli/pkg/cli"
+	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
-var projectListCmd = &cobra.Command{
+var cloudcredentialsListCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
     Use:   "list",
     Aliases: []string{},
-    Short:  "Command to list projects from current tenant",
+    Short:  "Command to list cloudcredentials from current tenant",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
 		method := "GET"
-		endpoint := "/getprojects"
-		responseBody, err := daiteap.SendDaiteapRequest(method, endpoint, "")
+		endpoint := "/getCloudCredentials"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {
 			fmt.Println(err)
@@ -30,5 +30,5 @@ var projectListCmd = &cobra.Command{
 }
 
 func init() {
-	projectCmd.AddCommand(projectListCmd)
+    cloudcredentialsCmd.AddCommand(cloudcredentialsListCmd)
 }

@@ -1,6 +1,8 @@
-package daiteap
+package daiteapcli
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 

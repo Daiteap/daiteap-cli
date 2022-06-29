@@ -1,14 +1,14 @@
-package daiteap
+package daiteapcli
 
 import (
 	"fmt"
 	"encoding/json"
 
-	"github.com/Daiteap-D2C/cli/pkg/cli"
+	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
-var projectDeleteCmd = &cobra.Command{
+var projectsDeleteCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
     Use:   "delete",
@@ -20,7 +20,7 @@ var projectDeleteCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/deleteproject"
 		requestBody := "{\"projectId\": \"" + id + "\"}"
-		responseBody, err := daiteap.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 
 		if err != nil {
 			fmt.Println(err)
@@ -32,11 +32,11 @@ var projectDeleteCmd = &cobra.Command{
 }
 
 func init() {
-	projectCmd.AddCommand(projectDeleteCmd)
+	projectsCmd.AddCommand(projectsDeleteCmd)
 
 	parameters := [][]interface{}{
 		[]interface{}{"id", "ID of the project.", "string", false},
 	}
 
-	addParameterFlags(parameters, projectDeleteCmd)
+	addParameterFlags(parameters, projectsDeleteCmd)
 }

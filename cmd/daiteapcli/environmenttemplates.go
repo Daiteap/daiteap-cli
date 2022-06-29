@@ -1,4 +1,4 @@
-package daiteap
+package daiteapcli
 
 import (
 	"os"
@@ -6,12 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var projectCmd = &cobra.Command{
+var environmenttemplatesCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "project",
+    Use:   "environmenttemplates",
     Aliases: []string{"proj"},
-    Short:  "Command to interact with projects from current tenant",
+    Short:  "Command to interact with environment templates from current tenant",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
@@ -23,5 +23,5 @@ var projectCmd = &cobra.Command{
 }
 
 func init() {
-    rootCmd.AddCommand(projectCmd)
+    rootCmd.AddCommand(environmenttemplatesCmd)
 }
