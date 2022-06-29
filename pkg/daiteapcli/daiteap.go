@@ -1,4 +1,4 @@
-package daiteap
+package daiteapcli
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"encoding/json"
 
-	"github.com/Daiteap-D2C/cli/pkg/cli/authUtils"
+	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli/authUtils"
 )
 
 func GetActiveToken () (string, error) {

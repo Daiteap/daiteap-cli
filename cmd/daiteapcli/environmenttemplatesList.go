@@ -1,14 +1,14 @@
-package daiteap
+package daiteapcli
 
 import (
     "fmt"
     "encoding/json"
 
-    "github.com/Daiteap-D2C/cli/pkg/cli"
+    "github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
-var environmenttemplateListCmd = &cobra.Command{
+var environmenttemplatesListCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
     Use:   "list",
@@ -18,7 +18,7 @@ var environmenttemplateListCmd = &cobra.Command{
     Run: func(cmd *cobra.Command, args []string) {
 		method := "GET"
 		endpoint := "/environmenttemplates/list"
-		responseBody, err := daiteap.SendDaiteapRequest(method, endpoint, "")
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {
 			fmt.Println(err)
@@ -30,5 +30,5 @@ var environmenttemplateListCmd = &cobra.Command{
 }
 
 func init() {
-	environmenttemplateCmd.AddCommand(environmenttemplateListCmd)
+	environmenttemplatesCmd.AddCommand(environmenttemplatesListCmd)
 }

@@ -1,14 +1,14 @@
-package daiteap
+package daiteapcli
 
 import (
 	"fmt"
 	"encoding/json"
 
-	"github.com/Daiteap-D2C/cli/pkg/cli"
+	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
-var projectUpdateCmd = &cobra.Command{
+var projectsUpdateCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
     Use:   "update",
@@ -22,7 +22,7 @@ var projectUpdateCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/updateProject/" + id
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
-		responseBody, err := daiteap.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 
 		if err != nil {
 			fmt.Println(err)
@@ -34,7 +34,7 @@ var projectUpdateCmd = &cobra.Command{
 }
 
 func init() {
-	projectCmd.AddCommand(projectUpdateCmd)
+	projectsCmd.AddCommand(projectsUpdateCmd)
 	
 	parameters := [][]interface{}{
 		[]interface{}{"id", "ID of the project.", "string", false},
@@ -42,5 +42,5 @@ func init() {
 		[]interface{}{"description", "Description of the project.", "string", false},
 	}
 
-	addParameterFlags(parameters, projectUpdateCmd)
+	addParameterFlags(parameters, projectsUpdateCmd)
 }
