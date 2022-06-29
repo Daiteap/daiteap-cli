@@ -19,7 +19,7 @@ go build
 To run the tool without building the binary execute this command
 
 ```
-go install github.com/Daiteap-D2C/cli@latest
+go install github.com/Daiteap-D2C/daiteapcli@latest
 ```
 
 After that you will have the binary of the latest version.
