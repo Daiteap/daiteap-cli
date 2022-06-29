@@ -114,11 +114,13 @@ func StartServer(config Config) {
 func IsTokenExpired (token *string) (bool, error) {
 	encodedTokenPayload := strings.Split(*token, ".")[1]
 
-	if len(encodedTokenPayload) % 3 == 1 {
-		encodedTokenPayload += "=="
-	} else if len(encodedTokenPayload) % 3 == 2 {
-		encodedTokenPayload += "="
-	}
+	if len(encodedTokenPayload)%4 == 3 {
+        encodedTokenPayload += "="
+    } else if len(encodedTokenPayload)%4 == 2 {
+        encodedTokenPayload += "=="
+    } else if len(encodedTokenPayload)%4 == 1 {
+        encodedTokenPayload += "==="
+    }
 
 	tokenPayload, _ := base64.StdEncoding.DecodeString(encodedTokenPayload)
 
