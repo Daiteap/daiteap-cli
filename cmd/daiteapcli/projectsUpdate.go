@@ -1,21 +1,21 @@
 package daiteapcli
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 
-	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli"
+	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
 var projectsUpdateCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "update",
-    Aliases: []string{},
-    Short:  "Command to update project from current tenant",
-	Args: cobra.ExactArgs(0),
-    Run: func(cmd *cobra.Command, args []string) {
+	Use:           "update",
+	Aliases:       []string{},
+	Short:         "Command to update project from current tenant",
+	Args:          cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
 		id, _ := cmd.Flags().GetString("id")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
@@ -30,12 +30,12 @@ var projectsUpdateCmd = &cobra.Command{
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}
-    },
+	},
 }
 
 func init() {
 	projectsCmd.AddCommand(projectsUpdateCmd)
-	
+
 	parameters := [][]interface{}{
 		[]interface{}{"id", "ID of the project.", "string", false},
 		[]interface{}{"name", "Name of the project.", "string", false},

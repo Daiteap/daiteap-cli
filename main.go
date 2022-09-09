@@ -1,7 +1,7 @@
 package main
 
-import "github.com/Daiteap-D2C/daiteapcli/cmd/daiteapcli"
+import "github.com/Daiteap/daiteapcli/cmd/daiteapcli"
 
 func main() {
-    daiteapcli.Execute()
+	daiteapcli.Execute()
 }

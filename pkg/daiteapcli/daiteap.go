@@ -1,17 +1,17 @@
 package daiteapcli
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
-	"strings"
 	"io/ioutil"
 	"net/http"
-	"encoding/json"
+	"strings"
 
-	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli/authUtils"
+	"github.com/Daiteap/daiteapcli/pkg/daiteapcli/authUtils"
 )
 
-func GetActiveToken () (string, error) {
+func GetActiveToken() (string, error) {
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
 			KeycloakURL: "https://stg.daiteap.com/auth",
@@ -64,7 +64,7 @@ func GetActiveToken () (string, error) {
 	return accessToken, nil
 }
 
-func Login () error {
+func Login() error {
 	authUtils.CloseApp.Add(1)
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
@@ -90,12 +90,12 @@ func Login () error {
 	return nil
 }
 
-func SendDaiteapRequest (method string, endpoint string, requestBody string) (map[string]interface{}, error) {
+func SendDaiteapRequest(method string, endpoint string, requestBody string) (map[string]interface{}, error) {
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
 	daiteapServerURL := "https://stg.daiteap.com/server"
-	URL := fmt.Sprintf("%v" + endpoint, daiteapServerURL)
+	URL := fmt.Sprintf("%v"+endpoint, daiteapServerURL)
 
 	token, err := GetActiveToken()
 	if err != nil {
@@ -103,7 +103,7 @@ func SendDaiteapRequest (method string, endpoint string, requestBody string) (ma
 	}
 
 	request, err := http.NewRequest(method, URL, strings.NewReader(requestBody))
-	request.Header.Set("Authorization", token, )
+	request.Header.Set("Authorization", token)
 	request.Header.Set("Content-type", "application/json")
 
 	resp, err = http.DefaultClient.Do(request)

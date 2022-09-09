@@ -1,21 +1,21 @@
 package daiteapcli
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 
-	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli"
+	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
 var cloudcredentialsUpdateCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "update",
-    Aliases: []string{},
-    Short:  "Command to update cloudcredentials from current tenant",
-    Args: cobra.ExactArgs(0),
-    Run: func(cmd *cobra.Command, args []string) {
+	Use:           "update",
+	Aliases:       []string{},
+	Short:         "Command to update cloudcredentials from current tenant",
+	Args:          cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
 		id, _ := cmd.Flags().GetString("id")
 		provider, _ := cmd.Flags().GetString("provider")
 		label, _ := cmd.Flags().GetString("label")
@@ -37,7 +37,7 @@ var cloudcredentialsUpdateCmd = &cobra.Command{
 
 func init() {
 	cloudcredentialsCmd.AddCommand(cloudcredentialsUpdateCmd)
-	
+
 	parameters := [][]interface{}{
 		[]interface{}{"id", "ID of the cloudcredentials.", "string", false},
 		[]interface{}{"provider", "Provider of the cloudcredentials.", "string", false},

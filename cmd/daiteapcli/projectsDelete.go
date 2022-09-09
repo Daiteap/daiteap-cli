@@ -1,21 +1,21 @@
 package daiteapcli
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 
-	"github.com/Daiteap-D2C/daiteapcli/pkg/daiteapcli"
+	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
 var projectsDeleteCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "delete",
-    Aliases: []string{},
-    Short:  "Command to delete project from current tenant",
-	Args: cobra.ExactArgs(0),
-    Run: func(cmd *cobra.Command, args []string) {
+	Use:           "delete",
+	Aliases:       []string{},
+	Short:         "Command to delete project from current tenant",
+	Args:          cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
 		id, _ := cmd.Flags().GetString("id")
 		method := "POST"
 		endpoint := "/deleteproject"
@@ -28,7 +28,7 @@ var projectsDeleteCmd = &cobra.Command{
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}
-    },
+	},
 }
 
 func init() {

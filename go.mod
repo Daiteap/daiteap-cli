@@ -1,4 +1,4 @@
-module github.com/Daiteap-D2C/daiteapcli
+module github.com/Daiteap/daiteapcli
 
 go 1.16
 
