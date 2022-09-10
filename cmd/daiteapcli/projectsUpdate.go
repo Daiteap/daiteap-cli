@@ -19,8 +19,8 @@ var projectsUpdateCmd = &cobra.Command{
 		id, _ := cmd.Flags().GetString("id")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
-		method := "POST"
-		endpoint := "/updateProject/" + id
+		method := "PUT"
+		endpoint := "/projects/" + id
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 

@@ -17,7 +17,7 @@ var cloudcredentialsListCmd = &cobra.Command{
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		method := "GET"
-		endpoint := "/getCloudCredentials"
+		endpoint := "/cloud-credentials"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {
