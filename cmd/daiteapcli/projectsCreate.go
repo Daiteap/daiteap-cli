@@ -19,7 +19,7 @@ var projectsCreateCmd = &cobra.Command{
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
 		method := "POST"
-		endpoint := "/saveproject"
+		endpoint := "/projects"
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 

@@ -19,7 +19,7 @@ var projectsListCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		outputFormat, _ := cmd.Flags().GetString("output")
 		method := "GET"
-		endpoint := "/getprojects"
+		endpoint := "/projects"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {
@@ -31,7 +31,7 @@ var projectsListCmd = &cobra.Command{
 			} else {
 				tbl := table.New("Name", "Created at", "Contact")
 
-				for _, project := range responseBody["projects"].([]interface{}) {
+				for _, project := range responseBody["data"].([]interface{}) {
 					projectObject := project.(map[string]interface{})
 					tbl.AddRow(projectObject["name"], projectObject["created_at"], projectObject["contact"])
 				}

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	// "reflect"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli/authUtils"
 )
@@ -14,7 +15,7 @@ import (
 func GetActiveToken() (string, error) {
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "https://stg.daiteap.com/auth",
+			KeycloakURL: "https://app.daiteap.com/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -68,7 +69,7 @@ func Login() error {
 	authUtils.CloseApp.Add(1)
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "https://stg.daiteap.com/auth",
+			KeycloakURL: "https://app.daiteap.com/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -94,7 +95,7 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
-	daiteapServerURL := "https://stg.daiteap.com/server"
+	daiteapServerURL := "https://app.daiteap.com/server"
 	URL := fmt.Sprintf("%v"+endpoint, daiteapServerURL)
 
 	token, err := GetActiveToken()
@@ -113,6 +114,13 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 		if resp.StatusCode == 200 {
 			var f interface{}
 			json.Unmarshal(responseBody, &f)
+			switch f.(type) {
+			case []interface{}:
+				arrayResponseBody := make(map[string]interface{})
+				arrayResponseBody["data"] = f
+				return arrayResponseBody, nil
+			}
+
 			m := f.(map[string]interface{})
 
 			return m, nil

@@ -22,7 +22,7 @@ var cloudcredentialsUpdateCmd = &cobra.Command{
 		description, _ := cmd.Flags().GetString("description")
 		shared, _ := cmd.Flags().GetString("shared")
 		method := "POST"
-		endpoint := "/updateCloudCredential/" + id
+		endpoint := "/cloud-credentials/" + id
 		requestBody := "{\"provider\": \"" + provider + "\", \"label\": \"" + label + "\", \"description\": \"" + description + "\", \"sharedCredentials\": " + shared + "}"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 

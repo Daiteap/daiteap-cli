@@ -18,7 +18,7 @@ var projectsDeleteCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		id, _ := cmd.Flags().GetString("id")
 		method := "POST"
-		endpoint := "/deleteproject"
+		endpoint := "/projects/" + id
 		requestBody := "{\"projectId\": \"" + id + "\"}"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 
