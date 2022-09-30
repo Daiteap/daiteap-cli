@@ -29,11 +29,11 @@ var projectsListCmd = &cobra.Command{
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
 			} else {
-				tbl := table.New("Name", "Created at", "Contact")
+				tbl := table.New("Name", "Description", "Created at", "Created by")
 
 				for _, project := range responseBody["data"].([]interface{}) {
 					projectObject := project.(map[string]interface{})
-					tbl.AddRow(projectObject["name"], projectObject["created_at"], projectObject["contact"])
+					tbl.AddRow(projectObject["name"], projectObject["description"], projectObject["created_at"], projectObject["contact"])
 				}
 
 				tbl.Print()

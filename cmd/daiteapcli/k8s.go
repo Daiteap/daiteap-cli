@@ -6,12 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var clusterCmd = &cobra.Command{
+var k8sCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "cluster",
-    Aliases: []string{"clus"},
-    Short:  "Command to interact with clusters",
+    Use:   "k8s",
+    Aliases: []string{},
+    Short:  "Command to interact with Kubernetes environments",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
@@ -23,5 +23,5 @@ var clusterCmd = &cobra.Command{
 }
 
 func init() {
-    rootCmd.AddCommand(clusterCmd)
+    rootCmd.AddCommand(k8sCmd)
 }

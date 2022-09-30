@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
+	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
 
@@ -16,6 +17,7 @@ var cloudcredentialsListCmd = &cobra.Command{
 	Short:         "Command to list cloudcredentials from current tenant",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		outputFormat, _ := cmd.Flags().GetString("output")
 		method := "GET"
 		endpoint := "/cloud-credentials"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
@@ -23,8 +25,19 @@ var cloudcredentialsListCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			output, _ := json.MarshalIndent(responseBody, "", "    ")
-			fmt.Println(string(output))
+			if outputFormat == "json" {
+				output, _ := json.MarshalIndent(responseBody, "", "    ")
+				fmt.Println(string(output))
+			} else {
+				tbl := table.New("Name", "Description", "Cloud", "Created at", "Created by")
+
+				for _, credential := range responseBody["data"].([]interface{}) {
+					credentialObject := credential.(map[string]interface{})
+					tbl.AddRow(credentialObject["label"], credentialObject["description"], credentialObject["provider"], credentialObject["created_at"], credentialObject["contact"])
+				}
+
+				tbl.Print()
+			}
 		}
 	},
 }

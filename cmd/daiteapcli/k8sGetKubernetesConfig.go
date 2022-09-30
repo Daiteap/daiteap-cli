@@ -8,16 +8,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var clusterListCmd = &cobra.Command{
+var k8sGetKubernetesConfigCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Use:           "list",
+	Use:           "get-supported-k8s-config",
 	Aliases:       []string{},
-	Short:         "Command to list clusters",
+	Short:         "Command to get supported kubernetes configuration",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		method := "POST"
-		endpoint := "/getClusterList"
+		method := "GET"
+		endpoint := "/getsupportedkubernetesconfigurations"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {
@@ -30,5 +30,5 @@ var clusterListCmd = &cobra.Command{
 }
 
 func init() {
-	clusterCmd.AddCommand(clusterListCmd)
+	k8sCmd.AddCommand(k8sGetKubernetesConfigCmd)
 }

@@ -3,22 +3,33 @@ package daiteapcli
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
-var clusterGetConfigCmd = &cobra.Command{
+var k8sCancelCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Use:           "get-config",
+	Use:           "cancel",
 	Aliases:       []string{},
-	Short:         "Command to get cluster's config",
+	Short:         "Command to cancel Kubernetes cluster creation",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		clusterID, _ := cmd.Flags().GetString("cluster")
+		isKubernetes, err := IsKubernetes(clusterID)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(0)
+		}
+		if isKubernetes == false {
+			fmt.Println("Please enter valid Kubernetes cluster ID")
+			os.Exit(0)
+		}
+
 		method := "POST"
-		endpoint := "/getClusterConfig"
+		endpoint := "/cancelClusterCreation"
 		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 
@@ -32,11 +43,11 @@ var clusterGetConfigCmd = &cobra.Command{
 }
 
 func init() {
-	clusterCmd.AddCommand(clusterGetConfigCmd)
+	k8sCmd.AddCommand(k8sCancelCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"cluster", "ID of the cluster.", "string", false},
+		[]interface{}{"cluster", "ID of the Kubernetes cluster", "string", false},
 	}
 
-	addParameterFlags(parameters, clusterGetConfigCmd)
+	addParameterFlags(parameters, k8sCancelCmd)
 }

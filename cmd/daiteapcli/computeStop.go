@@ -3,22 +3,33 @@ package daiteapcli
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
 
-var clusterStorageCmd = &cobra.Command{
+var computeStopCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Use:           "storage",
+	Use:           "stop",
 	Aliases:       []string{},
-	Short:         "Command to start task which checks cluster storage details.",
+	Short:         "Command to stop Compute (VMs)",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		clusterID, _ := cmd.Flags().GetString("cluster")
+		clusterID, _ := cmd.Flags().GetString("compute")
+		isCompute, err := IsCompute(clusterID)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(0)
+		}
+		if isCompute == false {
+			fmt.Println("Please enter valid Compute (VMs) ID")
+			os.Exit(0)
+		}
+
 		method := "POST"
-		endpoint := "/getClusterStorage"
+		endpoint := "/stopCluster"
 		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 
@@ -32,11 +43,11 @@ var clusterStorageCmd = &cobra.Command{
 }
 
 func init() {
-	clusterCmd.AddCommand(clusterStorageCmd)
+	computeCmd.AddCommand(computeStopCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"cluster", "ID of the cluster.", "string", false},
+		[]interface{}{"compute", "ID of the Compute (VMs)", "string", false},
 	}
 
-	addParameterFlags(parameters, clusterStorageCmd)
+	addParameterFlags(parameters, computeStopCmd)
 }

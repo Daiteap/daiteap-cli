@@ -6,12 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var taskCmd = &cobra.Command{
+var computeCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "task",
-    Aliases: []string{"tsk"},
-    Short:  "Command to interact with tasks",
+    Use:   "compute",
+    Aliases: []string{},
+    Short:  "Command to interact with Compute (VMs)",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
@@ -23,5 +23,5 @@ var taskCmd = &cobra.Command{
 }
 
 func init() {
-    rootCmd.AddCommand(taskCmd)
+    rootCmd.AddCommand(computeCmd)
 }
