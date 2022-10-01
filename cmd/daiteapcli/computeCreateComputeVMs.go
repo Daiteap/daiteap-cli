@@ -117,7 +117,11 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 				}
 
 				google := make(map[string]interface{})
-				google["account"] = googleCredential
+				google["account"], err = strconv.Atoi(googleCredential)
+				if err != nil {
+					fmt.Println("Error reading google credential parameter")
+					os.Exit(0)
+				}
 				google["region"] = googleRegion
 				google["vpcCidr"] = gcpCidr
 				google["nodes"] = gcpNodes
@@ -179,7 +183,11 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 				}
 
 				aws := make(map[string]interface{})
-				aws["account"] = awsCredential
+				aws["account"], err = strconv.Atoi(awsCredential)
+				if err != nil {
+					fmt.Println("Error reading aws credential parameter")
+					os.Exit(0)
+				}
 				aws["region"] = awsRegion
 				aws["vpcCidr"] = awsCidr
 				aws["nodes"] = awsNodes
@@ -241,7 +249,11 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 				}
 
 				azure := make(map[string]interface{})
-				azure["account"] = azureCredential
+				azure["account"], err = strconv.Atoi(azureCredential)
+				if err != nil {
+					fmt.Println("Error reading azure credential parameter")
+					os.Exit(0)
+				}
 				azure["region"] = azureRegion
 				azure["vpcCidr"] = azureCidr
 				azure["nodes"] = azureNodes

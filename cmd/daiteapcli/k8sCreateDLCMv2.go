@@ -6,6 +6,7 @@ import (
 	"strings"
 	"io/ioutil"
 	"os"
+	"strconv"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
@@ -161,7 +162,11 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 				}
 
 				google := make(map[string]interface{})
-				google["account"] = googleCredential
+				google["account"], err = strconv.Atoi(googleCredential)
+				if err != nil {
+					fmt.Println("Error reading google credential parameter")
+					os.Exit(0)
+				}
 				google["region"] = googleRegion
 				google["vpcCidr"] = "10.30.0.0/16"
 				google["nodes"] = gcpNodes
@@ -217,7 +222,11 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 				}
 
 				aws := make(map[string]interface{})
-				aws["account"] = awsCredential
+				aws["account"], err = strconv.Atoi(awsCredential)
+				if err != nil {
+					fmt.Println("Error reading aws credential parameter")
+					os.Exit(0)
+				}
 				aws["region"] = awsRegion
 				aws["vpcCidr"] = "10.10.0.0/16"
 				aws["nodes"] = awsNodes
@@ -273,7 +282,11 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 				}
 
 				azure := make(map[string]interface{})
-				azure["account"] = azureCredential
+				azure["account"], err = strconv.Atoi(azureCredential)
+				if err != nil {
+					fmt.Println("Error reading azure credential parameter")
+					os.Exit(0)
+				}
 				azure["region"] = azureRegion
 				azure["vpcCidr"] = "10.20.0.0/16"
 				azure["nodes"] = azureNodes
