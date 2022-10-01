@@ -1,7 +1,6 @@
 package daiteapcli
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
@@ -36,8 +35,35 @@ var k8sGetInstallStatusCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			output, _ := json.MarshalIndent(responseBody, "", "    ")
-			fmt.Println(string(output))
+			installStep := responseBody["installStep"].(float64)
+
+			if installStep == 0 {
+				fmt.Println("Current status: Created")
+			} else if installStep >= 1 && installStep <= 6 {
+				fmt.Println("Current status: Allocating resources")
+			} else if installStep >= 7 && installStep <= 8 {
+				fmt.Println("Current status: Preparing for Kubernetes installation")
+			} else if installStep >= 9 && installStep <= 12 {
+				fmt.Println("Current status: Configuring machines")
+			} else if installStep >= 13 && installStep <= 24 {
+				fmt.Println("Current status: Installing Kubernetes")
+			} else if installStep >= 25 && installStep <= 30 {
+				fmt.Println("Current status: Finishing installation")
+			} else if installStep <= -1 && installStep >= -6 {
+				fmt.Println("Current status: Error in allocating resources")
+			} else if installStep <= -7 && installStep >= -8 {
+				fmt.Println("Current status: Error preparing for Kubernetes installation")
+			} else if installStep <= -9 && installStep >= -12 {
+				fmt.Println("Current status: Error configuring machines")
+			} else if installStep <= -13 && installStep >= -24 {
+				fmt.Println("Current status: Error installing Kubernetes")
+			} else if installStep <= -25 && installStep >= -30 {
+				fmt.Println("Current status: Error finishing installation")
+			} else if installStep == 100 {
+				fmt.Println("Current status: Deleting")
+			} else if installStep == -100 {
+				fmt.Println("Current status: Error deleting")
+			}
 		}
 	},
 }

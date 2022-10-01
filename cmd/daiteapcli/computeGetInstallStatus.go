@@ -1,7 +1,6 @@
 package daiteapcli
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
@@ -36,8 +35,23 @@ var computeGetInstallStatusCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			output, _ := json.MarshalIndent(responseBody, "", "    ")
-			fmt.Println(string(output))
+			installStep := responseBody["installStep"].(float64)
+
+			if installStep == 0 {
+				fmt.Println("Current status: Created")
+			} else if installStep >= 1 && installStep <= 3 {
+				fmt.Println("Current status: Creating machines")
+			} else if installStep >= 4 && installStep <= 10 {
+				fmt.Println("Current status: Configuring machines")
+			} else if installStep <= -1 && installStep >= -3 {
+				fmt.Println("Current status: Error creating machines")
+			} else if installStep <= -4 && installStep >= -10 {
+				fmt.Println("Current status: Error configuring machines")
+			} else if installStep == 100 {
+				fmt.Println("Current status: Deleting")
+			} else if installStep == -100 {
+				fmt.Println("Current status: Error deleting")
+			}
 		}
 	},
 }
