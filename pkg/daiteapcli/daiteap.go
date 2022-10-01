@@ -15,7 +15,7 @@ import (
 func GetActiveToken() (string, error) {
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "https://stg.daiteap.com/auth",
+			KeycloakURL: "https://app.daiteap.com/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -69,7 +69,7 @@ func Login() error {
 	authUtils.CloseApp.Add(1)
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "https://stg.daiteap.com/auth",
+			KeycloakURL: "https://app.daiteap.com/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -95,7 +95,7 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
-	daiteapServerURL := "https://stg.daiteap.com/server"
+	daiteapServerURL := "https://app.daiteap.com/server"
 	URL := fmt.Sprintf("%v"+endpoint, daiteapServerURL)
 
 	token, err := GetActiveToken()
