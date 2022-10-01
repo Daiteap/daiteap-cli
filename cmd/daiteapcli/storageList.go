@@ -9,17 +9,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cloudcredentialsListCmd = &cobra.Command{
+var storageListCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "list",
 	Aliases:       []string{},
-	Short:         "Command to list cloudcredentials from current tenant",
+	Short:         "Command to list storage buckets from current tenant",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		outputFormat, _ := cmd.Flags().GetString("output")
 		method := "GET"
-		endpoint := "/cloud-credentials"
+		endpoint := "/buckets"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {
@@ -29,11 +29,12 @@ var cloudcredentialsListCmd = &cobra.Command{
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
 			} else {
-				tbl := table.New("Name", "Description", "Cloud", "Created at", "Created by")
+				tbl := table.New("Name", "Cloud", "Project", "Credential", "Created At")
 
-				for _, credential := range responseBody["data"].([]interface{}) {
-					credentialObject := credential.(map[string]interface{})
-					tbl.AddRow(credentialObject["label"], credentialObject["description"], credentialObject["provider"], credentialObject["created_at"], credentialObject["contact"])
+				for _, bucket := range responseBody["data"].([]interface{}) {
+					bucketObject := bucket.(map[string]interface{})
+
+					tbl.AddRow(bucketObject["name"], bucketObject["provider"], bucketObject["project"], bucketObject["credential"], bucketObject["created_at"])
 				}
 
 				tbl.Print()
@@ -43,5 +44,5 @@ var cloudcredentialsListCmd = &cobra.Command{
 }
 
 func init() {
-	cloudcredentialsCmd.AddCommand(cloudcredentialsListCmd)
+	storageCmd.AddCommand(storageListCmd)
 }

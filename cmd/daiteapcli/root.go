@@ -7,7 +7,7 @@ import (
  "github.com/spf13/cobra"
 )
 
-var version = "0.0.4"
+var version = "0.1.0"
 
 var rootCmd = &cobra.Command{
     Use:  "daiteapcli",

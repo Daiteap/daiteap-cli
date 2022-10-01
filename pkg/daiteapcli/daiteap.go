@@ -1,6 +1,7 @@
 package daiteapcli
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -130,4 +131,72 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 	} else {
 		return emptyResponseBody, err
 	}
+}
+
+func GetUsername() (string, error) {
+	config := authUtils.Config{
+		KeycloakConfig: authUtils.KeycloakConfig{
+			KeycloakURL: "https://app.daiteap.com/auth",
+			Realm:       "Daiteap",
+			ClientID:    "daiteap-cli",
+		},
+		EmbeddedServerConfig: authUtils.EmbeddedServerConfig{
+			Port:         3000,
+			CallbackPath: "sso-callback",
+		},
+	}
+	authConfig, err := authUtils.GetConfig()
+
+	if err != nil {
+		err := fmt.Errorf("Error reading token. Please login again.")
+		return "", err
+	}
+
+	accessToken := authConfig.AccessToken
+	refreshToken := authConfig.RefreshToken
+	expired, err := authUtils.IsTokenExpired(&accessToken)
+
+	if err != nil {
+		err := fmt.Errorf("Error reading token. Please login again.")
+		return "", err
+	}
+
+	if expired == true {
+		expired, err = authUtils.IsTokenExpired(&refreshToken)
+
+		if err != nil {
+			err := fmt.Errorf("Error reading token. Please login again.")
+			return "", err
+		}
+
+		if expired == true {
+			err := fmt.Errorf("Your credentials are expired. Please login again.")
+			return "", err
+		}
+
+		err = authUtils.RefreshAccessToken(&config)
+		if err != nil {
+			err := fmt.Errorf("Error refreshing accessToken. Please login again.")
+			return "", err
+		}
+		authConfig, err = authUtils.GetConfig()
+		accessToken = authConfig.AccessToken
+	}
+
+	encodedTokenPayload := strings.Split(accessToken, ".")[1]
+	if len(encodedTokenPayload)%4 == 3 {
+        encodedTokenPayload += "="
+    } else if len(encodedTokenPayload)%4 == 2 {
+        encodedTokenPayload += "=="
+    } else if len(encodedTokenPayload)%4 == 1 {
+        encodedTokenPayload += "==="
+    }
+
+	payload, _ := base64.StdEncoding.DecodeString(encodedTokenPayload)
+
+	var jsonMap map[string]interface{}
+	json.Unmarshal(payload, &jsonMap)
+	username := jsonMap["preferred_username"].(string)
+
+	return username, nil
 }

@@ -9,17 +9,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cloudcredentialsListCmd = &cobra.Command{
+var workspaceListCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "list",
 	Aliases:       []string{},
-	Short:         "Command to list cloudcredentials from current tenant",
+	Short:         "Command to list workspaces for current user",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		outputFormat, _ := cmd.Flags().GetString("output")
 		method := "GET"
-		endpoint := "/cloud-credentials"
+		endpoint := "/getActiveTenants"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {
@@ -29,11 +29,11 @@ var cloudcredentialsListCmd = &cobra.Command{
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
 			} else {
-				tbl := table.New("Name", "Description", "Cloud", "Created at", "Created by")
+				tbl := table.New("Name", "Owner", "Email", "Phone", "Created at", "Updated at", "Active")
 
-				for _, credential := range responseBody["data"].([]interface{}) {
-					credentialObject := credential.(map[string]interface{})
-					tbl.AddRow(credentialObject["label"], credentialObject["description"], credentialObject["provider"], credentialObject["created_at"], credentialObject["contact"])
+				for _, workspace := range responseBody["activeTenants"].([]interface{}) {
+					workspaceObject := workspace.(map[string]interface{})
+					tbl.AddRow(workspaceObject["name"], workspaceObject["owner"], workspaceObject["email"], workspaceObject["phone"], workspaceObject["createdAt"], workspaceObject["updatedAt"], workspaceObject["selected"])
 				}
 
 				tbl.Print()
@@ -43,5 +43,5 @@ var cloudcredentialsListCmd = &cobra.Command{
 }
 
 func init() {
-	cloudcredentialsCmd.AddCommand(cloudcredentialsListCmd)
+	workspaceCmd.AddCommand(workspaceListCmd)
 }

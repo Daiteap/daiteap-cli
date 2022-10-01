@@ -39,7 +39,7 @@ func init() {
 	cloudcredentialsCmd.AddCommand(cloudcredentialsUpdateCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"id", "ID of the cloudcredentials.", "string", false},
+		[]interface{}{"cloudcredential", "ID of the cloudcredentials.", "string", false},
 		[]interface{}{"provider", "Provider of the cloudcredentials.", "string", false},
 		[]interface{}{"label", "Label of the project.", "string", false},
 		[]interface{}{"description", "Description of the cloudcredentials.", "string", false},

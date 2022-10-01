@@ -6,12 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cloudcredentialsCmd = &cobra.Command{
+var computeCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "cloud-credentials",
-    Aliases: []string{"ccred"},
-    Short:  "Command to interact with cloud credentials from current tenant",
+    Use:   "compute",
+    Aliases: []string{},
+    Short:  "Command to interact with Compute (VMs)",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
@@ -23,5 +23,5 @@ var cloudcredentialsCmd = &cobra.Command{
 }
 
 func init() {
-    rootCmd.AddCommand(cloudcredentialsCmd)
+    rootCmd.AddCommand(computeCmd)
 }
