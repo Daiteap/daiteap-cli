@@ -17,7 +17,7 @@ var k8sGetKubernetesConfigCmd = &cobra.Command{
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		method := "GET"
-		endpoint := "/getsupportedkubernetesconfigurations"
+		endpoint := "/getsupporteddlcmv2configurations"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {

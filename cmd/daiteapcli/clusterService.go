@@ -128,7 +128,7 @@ func GetValidOperatingSystems(provider string, credentialID string, region strin
 
 func GetSupportedKubernetesConfig() (map[string]interface{}, error) {
     method := "GET"
-    endpoint := "/getsupportedkubernetesconfigurations"
+    endpoint := "/getsupporteddlcmv2configurations"
     responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
     k8sConfigs := make(map[string]interface{})
