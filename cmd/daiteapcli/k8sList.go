@@ -29,7 +29,7 @@ var k8sListCmd = &cobra.Command{
 			clusterArray := make(map[string][]interface{})
 			for _, cluster := range responseBody["data"].([]interface{}) {
 				clusterObject := cluster.(map[string]interface{})
-				switch clusterObject["type"] {
+				switch clusterObject["type"].(float64) {
 				case
 					1,
 					3,

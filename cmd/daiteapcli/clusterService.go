@@ -17,7 +17,7 @@ func IsKubernetes(clusterID string) (bool, error) {
         for _, cluster := range responseBody["data"].([]interface{}) {
             clusterObject := cluster.(map[string]interface{})
             if clusterObject["id"] == clusterID {
-                switch clusterObject["type"] {
+                switch clusterObject["type"].(float64) {
                 case
                     1,
                     3,
@@ -43,7 +43,7 @@ func IsCompute(clusterID string) (bool, error) {
         for _, cluster := range responseBody["data"].([]interface{}) {
             clusterObject := cluster.(map[string]interface{})
             if clusterObject["id"] == clusterID {
-                switch clusterObject["type"] {
+                switch clusterObject["type"].(float64) {
                 case
                     2,
                     6:
