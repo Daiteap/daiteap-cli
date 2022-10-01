@@ -277,11 +277,11 @@ func init() {
 		[]interface{}{"project", "project in which to add the DLCMv2 environment", "string", true},
 		[]interface{}{"name", "name of the DLCMv2 environment", "string", true},
 
-		[]interface{}{"google-credential", "google cloud credentials to use for the DLCMv2 environment", "string", true},
+		[]interface{}{"google-credential", "ID of google cloud credentials to use for the DLCMv2 environment", "string", true},
 		[]interface{}{"google-region", "GCP region to use for the DLCMv2 environment's resources", "string", true},
-		[]interface{}{"aws-credential", "AWS cloud credentials to use for the DLCMv2 environment", "string", true},
+		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the DLCMv2 environment", "string", true},
 		[]interface{}{"aws-region", "AWS region to use for the DLCMv2 environment's resources", "string", true},
-		[]interface{}{"azure-credential", "Azure cloud credentials to use for the DLCMv2 environment", "string", true},
+		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the DLCMv2 environment", "string", true},
 		[]interface{}{"azure-region", "Azure region to use for the DLCMv2 environment's resources", "string", true},
 
 		[]interface{}{"google-vpc-cidr", "google VPC CIDR of the Compute (VMs) environment", "string", true},
