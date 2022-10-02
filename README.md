@@ -59,6 +59,8 @@ daiteapcli k8s create-dlcmv2 \
 Create 5-node Compute cluster across **GCP** and **AWS**
 ```shell
 daiteapcli compute create-compute-vms \
+    --name "Multicloud_compute_cluster"
+    --project PROJ_ID
     --aws-credential 1 \
     --aws-instance-type S \
     --aws-machine-count 2 \
@@ -69,7 +71,9 @@ daiteapcli compute create-compute-vms \
     --google-instance-type M \
     --google-machine-count 3 \
     --google-operating-system debian \
-    --google-region 
+    --google-region us-east \
+    --google-zone us-east-2
+
 ```
 
 ## Build instructions
