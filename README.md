@@ -2,7 +2,7 @@
 
 - Website: https://daiteap.com
 
-
+![](assets/img/screenshot.png)
 ----
 
 `daiteapcli` is a command line tool used for interaction with the Daiteap platform.
