@@ -1,10 +1,11 @@
 # daiteapcli
 
-- Reduce Complexity with automated setup of Kubernetes Cluster, Virtual Machines and Storage across Provider and Platforms.
+Reduce Complexity with automated setup of Kubernetes Cluster, Virtual Machines and Storage across Provider and Platforms.
 
 - Website: https://daiteap.com
 
 ![](assets/img/screenshot.png)
+
 ----
 
 The `daiteapcli` is a command line tool that you can use alternatively to oru Daiteap Platform to interact with a Cloud Provider.
