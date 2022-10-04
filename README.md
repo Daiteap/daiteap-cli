@@ -1,11 +1,15 @@
 # daiteapcli
 
+- Reduce Complexity with automated setup of Kubernetes Cluster, Virtual Machines and Storage across Provider and Platforms.
+
 - Website: https://daiteap.com
 
 ![](assets/img/screenshot.png)
 ----
 
-`daiteapcli` is a command line tool used for interaction with the Daiteap platform.
+The `daiteapcli` is a command line tool that you can use alternatively to oru Daiteap Platform to interact with a Cloud Provider.
+
+daiteapcli offers one interface to IaaS cloud provider and cloud platforms to spin up essential services. With our unique network solution, you are able to span Kubernetes and VM clusters across providers e.g. multi-region and multi site.
 
 ----
 
