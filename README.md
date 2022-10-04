@@ -8,7 +8,7 @@ Reduce Complexity with automated setup of Kubernetes Cluster, Virtual Machines a
 
 ----
 
-The `daiteapcli` is a command line tool that you can use alternatively to oru Daiteap Platform to interact with a Cloud Provider.
+The `daiteapcli` is a command line tool that you can use alternatively to our Daiteap Web Console to interact with a Cloud Provider.
 
 daiteapcli offers one interface to IaaS cloud provider and cloud platforms to spin up essential services. With our unique network solution, you are able to span Kubernetes and VM clusters across providers e.g. multi-region and multi site.
 
