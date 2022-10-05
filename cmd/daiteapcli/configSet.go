@@ -15,13 +15,13 @@ var configSetCmd = &cobra.Command{
 	Short:         "Command to change configurations that the client uses",
 	Args:          cobra.ExactArgs(0),
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		requiredFlags := []string{"server-url"}
+		requiredFlags := []string{"url"}
 		checkForRequiredFlags(requiredFlags, cmd)
 
-        return nil
-    },
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		serverURL, _ := cmd.Flags().GetString("server-url")
+		serverURL, _ := cmd.Flags().GetString("url")
 
 		err := daiteapcli.UpdateConfig(serverURL)
 
@@ -37,7 +37,7 @@ func init() {
 	configCmd.AddCommand(configSetCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"server-url", "URL of the new server. Example - https://app.daiteap.com", "string"},
+		[]interface{}{"url", "URL of the new server. Example - https://app.daiteap.com", "string"},
 	}
 
 	addParameterFlags(parameters, configSetCmd)
