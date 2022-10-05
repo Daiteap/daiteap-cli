@@ -13,9 +13,19 @@ import (
 )
 
 func GetActiveToken() (string, error) {
+	authConfig, err := authUtils.GetConfig()
+	if err != nil {
+		err := fmt.Errorf("Error reading token. Please login again.")
+		return "", err
+	}
+	if !(len(authConfig.ServerURL) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return "", err
+	}
+
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "https://app.daiteap.com/auth",
+			KeycloakURL: authConfig.ServerURL + "/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -24,26 +34,29 @@ func GetActiveToken() (string, error) {
 			CallbackPath: "sso-callback",
 		},
 	}
-	authConfig, err := authUtils.GetConfig()
-
-	if err != nil {
-		err := fmt.Errorf("Error reading token. Please login again.")
-		return "", err
-	}
 
 	accessToken := authConfig.AccessToken
 	refreshToken := authConfig.RefreshToken
-	expired, err := authUtils.IsTokenExpired(&accessToken)
-
-	if err != nil {
+	expired := true
+	if len(accessToken) > 0 {
+		expired, err = authUtils.IsTokenExpired(&accessToken)
+		if err != nil {
+			err := fmt.Errorf("Error reading token. Please login again.")
+			return "", err
+		}
+	} else {
 		err := fmt.Errorf("Error reading token. Please login again.")
 		return "", err
 	}
 
 	if expired == true {
-		expired, err = authUtils.IsTokenExpired(&refreshToken)
-
-		if err != nil {
+		if len(refreshToken) > 0 {
+			expired, err = authUtils.IsTokenExpired(&refreshToken)
+			if err != nil {
+				err := fmt.Errorf("Error reading token. Please login again.")
+				return "", err
+			}
+		} else {
 			err := fmt.Errorf("Error reading token. Please login again.")
 			return "", err
 		}
@@ -66,10 +79,20 @@ func GetActiveToken() (string, error) {
 }
 
 func Login() error {
+	authConfig, err := authUtils.GetConfig()
+	if err != nil {
+		err := fmt.Errorf("Error reading config. Please update it.")
+		return err
+	}
+	if !(len(authConfig.ServerURL) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return err
+	}
+
 	authUtils.CloseApp.Add(1)
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "https://app.daiteap.com/auth",
+			KeycloakURL: authConfig.ServerURL + "/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -80,7 +103,7 @@ func Login() error {
 	}
 
 	authUtils.StartServer(config)
-	err := authUtils.OpenBrowser(authUtils.BuildAuthorizationRequest(config))
+	err = authUtils.OpenBrowser(authUtils.BuildAuthorizationRequest(config))
 	if err != nil {
 		err := fmt.Errorf("Could not open the browser for url %v", authUtils.BuildAuthorizationRequest(config))
 		return err
@@ -95,7 +118,18 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
-	daiteapServerURL := "https://app.daiteap.com/server"
+
+	authConfig, err := authUtils.GetConfig()
+	if err != nil {
+		err := fmt.Errorf("Error reading token. Please login again.")
+		return emptyResponseBody, err
+	}
+	if !(len(authConfig.ServerURL) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return emptyResponseBody, err
+	}
+
+	daiteapServerURL := authConfig.ServerURL + "/server"
 	URL := fmt.Sprintf("%v"+endpoint, daiteapServerURL)
 
 	token, err := GetActiveToken()
@@ -134,9 +168,19 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 }
 
 func GetUsername() (string, error) {
+	authConfig, err := authUtils.GetConfig()
+	if err != nil {
+		err := fmt.Errorf("Error reading token. Please login again.")
+		return "", err
+	}
+	if !(len(authConfig.ServerURL) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return "", err
+	}
+
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
-			KeycloakURL: "https://app.daiteap.com/auth",
+			KeycloakURL: authConfig.ServerURL + "/auth",
 			Realm:       "Daiteap",
 			ClientID:    "daiteap-cli",
 		},
@@ -145,26 +189,29 @@ func GetUsername() (string, error) {
 			CallbackPath: "sso-callback",
 		},
 	}
-	authConfig, err := authUtils.GetConfig()
-
-	if err != nil {
-		err := fmt.Errorf("Error reading token. Please login again.")
-		return "", err
-	}
 
 	accessToken := authConfig.AccessToken
 	refreshToken := authConfig.RefreshToken
-	expired, err := authUtils.IsTokenExpired(&accessToken)
-
-	if err != nil {
+	expired := true
+	if len(accessToken) > 0 {
+		expired, err = authUtils.IsTokenExpired(&accessToken)
+		if err != nil {
+			err := fmt.Errorf("Error reading token. Please login again.")
+			return "", err
+		}
+	} else {
 		err := fmt.Errorf("Error reading token. Please login again.")
 		return "", err
 	}
 
 	if expired == true {
-		expired, err = authUtils.IsTokenExpired(&refreshToken)
-
-		if err != nil {
+		if len(refreshToken) > 0 {
+			expired, err = authUtils.IsTokenExpired(&refreshToken)
+			if expired == true {
+				err := fmt.Errorf("Your credentials are expired. Please login again.")
+				return "", err
+			}
+		} else {
 			err := fmt.Errorf("Error reading token. Please login again.")
 			return "", err
 		}
@@ -199,4 +246,37 @@ func GetUsername() (string, error) {
 	username := jsonMap["preferred_username"].(string)
 
 	return username, nil
+}
+
+func UpdateConfig(serverURL string) (error) {
+	var cfg *authUtils.IConfig = &authUtils.IConfig{
+		AccessToken:  "",
+		RefreshToken: "",
+		ServerURL:    serverURL,
+	}
+
+	err := authUtils.SaveConfig(cfg)
+	if err != nil {
+		err := fmt.Errorf("Error saving configuration.")
+		return err
+	}
+
+	return nil
+}
+
+func GetConfig() (map[string]interface{}, error) {
+	config := make(map[string]interface{})
+	authConfig, err := authUtils.GetConfig()
+	if err != nil {
+		err := fmt.Errorf("Error reading config. Please update it.")
+		return config, err
+	}
+	if !(len(authConfig.ServerURL) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return config, err
+	}
+
+	config["Server URL"] = authConfig.ServerURL
+
+	return config, nil
 }
