@@ -8,18 +8,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var usersDeleteCmd = &cobra.Command{
+var projectDeleteCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "delete",
 	Aliases:       []string{},
-	Short:         "Command to delete user from the workspace",
+	Short:         "Command to delete project from current tenant",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"id"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
-		username, _ := cmd.Flags().GetString("username")
+		id, _ := cmd.Flags().GetString("id")
 		method := "POST"
-		endpoint := "/delete_user"
-		requestBody := "{\"username\": \"" + username + "\"}"
+		endpoint := "/projects/" + id
+		requestBody := "{\"projectId\": \"" + id + "\"}"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 
 		if err != nil {
@@ -32,11 +38,11 @@ var usersDeleteCmd = &cobra.Command{
 }
 
 func init() {
-	usersCmd.AddCommand(usersDeleteCmd)
+	projectCmd.AddCommand(projectDeleteCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"username", "username of the user", "string", false},
+		[]interface{}{"id", "ID of the project", "string"},
 	}
 
-	addParameterFlags(parameters, usersDeleteCmd)
+	addParameterFlags(parameters, projectDeleteCmd)
 }

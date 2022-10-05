@@ -111,7 +111,7 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 	if err == nil {
 		responseBody, err = ioutil.ReadAll(io.LimitReader(resp.Body, 1<<20))
 		defer resp.Body.Close()
-		if resp.StatusCode == 200 {
+		if resp.StatusCode >= 200 && resp.StatusCode <= 300 {
 			var f interface{}
 			json.Unmarshal(responseBody, &f)
 			switch f.(type) {

@@ -1,13 +1,13 @@
 package daiteapcli
 
 import (
- "fmt"
- "os"
+    "fmt"
+    "os"
 
- "github.com/spf13/cobra"
+    "github.com/spf13/cobra"
 )
 
-var version = "0.1.1"
+var version = "0.1.2"
 
 var rootCmd = &cobra.Command{
     Use:  "daiteapcli",
@@ -18,8 +18,7 @@ var rootCmd = &cobra.Command{
 One can use daiteap to interact with Daiteap platform straight from the terminal`,
     PreRunE: func(cmd *cobra.Command, args []string) error {
         if len(args) == 0 {
-            cmd.Help()
-            os.Exit(0)
+            printHelpAndExit(cmd)
         }
         return nil
     },

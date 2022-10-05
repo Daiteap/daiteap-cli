@@ -15,6 +15,12 @@ var k8sGetInstallStatusCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to get Kubernetes cluster's creation status",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"cluster"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		clusterID, _ := cmd.Flags().GetString("cluster")
 		isKubernetes, err := IsKubernetes(clusterID)
@@ -72,7 +78,7 @@ func init() {
 	k8sCmd.AddCommand(k8sGetInstallStatusCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"cluster", "ID of the Kubernetes cluster", "string", false},
+		[]interface{}{"cluster", "ID of the Kubernetes cluster", "string"},
 	}
 
 	addParameterFlags(parameters, k8sGetInstallStatusCmd)

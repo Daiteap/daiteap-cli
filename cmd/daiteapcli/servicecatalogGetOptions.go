@@ -15,6 +15,12 @@ var servicecatalogGetOptionsCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to get connection info for specific installed service",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"service"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		service, _ := cmd.Flags().GetString("service")
 		method := "POST"
@@ -35,7 +41,7 @@ func init() {
 	servicecatalogCmd.AddCommand(servicecatalogGetOptionsCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"service", "service which options is requested", "string", false},
+		[]interface{}{"service", "service which options is requested", "string"},
 	}
 
 	addParameterFlags(parameters, servicecatalogGetOptionsCmd)

@@ -17,6 +17,12 @@ var servicecatalogInstallCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to install service on kubernetes environment",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"service-name", "configuration-type", "cluster", "service-template"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		serviceName, _ := cmd.Flags().GetString("service-name")
 		configurationType, _ := cmd.Flags().GetString("configuration-type")
@@ -49,10 +55,10 @@ func init() {
 	servicecatalogCmd.AddCommand(servicecatalogInstallCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"service-name", "name of the service you want to install.", "string", false},
-		[]interface{}{"configuration-type", "type of configuration to use for service install.", "string", false},
-		[]interface{}{"cluster", "ID of the cluster you want the service to be installed on.", "string", false},
-		[]interface{}{"service-template", "path to service template json file", "string", false},
+		[]interface{}{"service-name", "name of the service you want to install.", "string"},
+		[]interface{}{"configuration-type", "type of configuration to use for service install.", "string"},
+		[]interface{}{"cluster", "ID of the cluster you want the service to be installed on.", "string"},
+		[]interface{}{"service-template", "path to service template json file", "string"},
 	}
 
 	addParameterFlags(parameters, servicecatalogInstallCmd)

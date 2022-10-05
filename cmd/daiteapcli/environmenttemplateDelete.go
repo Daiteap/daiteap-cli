@@ -8,13 +8,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var environmenttemplatesDeleteCmd = &cobra.Command{
+var environmenttemplateDeleteCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "delete",
 	Aliases:       []string{},
 	Short:         "Command to delete environment template from current workspace.",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"environmenttemplate"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		environmenttemplateID, _ := cmd.Flags().GetString("environmenttemplate")
 		method := "POST"
@@ -32,11 +38,11 @@ var environmenttemplatesDeleteCmd = &cobra.Command{
 }
 
 func init() {
-	environmenttemplatesCmd.AddCommand(environmenttemplatesDeleteCmd)
+	environmenttemplateCmd.AddCommand(environmenttemplateDeleteCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"environmenttemplate", "ID of the environment template.", "string", false},
+		[]interface{}{"environmenttemplate", "ID of the environment template.", "string"},
 	}
 
-	addParameterFlags(parameters, environmenttemplatesDeleteCmd)
+	addParameterFlags(parameters, environmenttemplateDeleteCmd)
 }

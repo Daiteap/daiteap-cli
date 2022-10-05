@@ -8,17 +8,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cloudcredentialsDetailsCmd = &cobra.Command{
+var quotaListCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Use:           "details",
+	Use:           "list",
 	Aliases:       []string{},
-	Short:         "Command to get cloud credentials's detail information.",
+	Short:         "Command to list your quotas",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		cloudcredentialID, _ := cmd.Flags().GetString("cloudcredential")
 		method := "GET"
-		endpoint := "/cloud-credentials/" + cloudcredentialID
+		endpoint := "/getusage"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
 		if err != nil {
@@ -31,11 +30,5 @@ var cloudcredentialsDetailsCmd = &cobra.Command{
 }
 
 func init() {
-	cloudcredentialsCmd.AddCommand(cloudcredentialsDetailsCmd)
-
-	parameters := [][]interface{}{
-		[]interface{}{"cloudcredential", "ID of the cloud credential.", "string", false},
-	}
-
-	addParameterFlags(parameters, cloudcredentialsDetailsCmd)
+	quotaCmd.AddCommand(quotaListCmd)
 }

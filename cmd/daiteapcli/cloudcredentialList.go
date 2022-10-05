@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cloudcredentialsListCmd = &cobra.Command{
+var cloudcredentialListCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "list",
@@ -43,5 +43,5 @@ var cloudcredentialsListCmd = &cobra.Command{
 }
 
 func init() {
-	cloudcredentialsCmd.AddCommand(cloudcredentialsListCmd)
+	cloudcredentialCmd.AddCommand(cloudcredentialListCmd)
 }

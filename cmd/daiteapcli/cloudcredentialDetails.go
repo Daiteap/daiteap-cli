@@ -8,16 +8,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cloudcredentialsDeleteCmd = &cobra.Command{
+var cloudcredentialDetailsCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Use:           "delete",
+	Use:           "details",
 	Aliases:       []string{},
-	Short:         "Command to delete cloudcredentials from current workspace.",
+	Short:         "Command to get cloud credential's detail information.",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"cloudcredential"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		cloudcredentialID, _ := cmd.Flags().GetString("cloudcredential")
-		method := "DELETE"
+		method := "GET"
 		endpoint := "/cloud-credentials/" + cloudcredentialID
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
 
@@ -31,11 +37,11 @@ var cloudcredentialsDeleteCmd = &cobra.Command{
 }
 
 func init() {
-	cloudcredentialsCmd.AddCommand(cloudcredentialsDeleteCmd)
+	cloudcredentialCmd.AddCommand(cloudcredentialDetailsCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"cloudcredential", "ID of the cloudcredentials.", "string", false},
+		[]interface{}{"cloudcredential", "ID of the cloud credential.", "string"},
 	}
 
-	addParameterFlags(parameters, cloudcredentialsDeleteCmd)
+	addParameterFlags(parameters, cloudcredentialDetailsCmd)
 }

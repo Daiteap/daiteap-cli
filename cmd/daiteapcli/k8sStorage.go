@@ -16,6 +16,12 @@ var k8sStorageCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to start task which checks Kubernetes cluster storage details.",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"cluster"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		clusterID, _ := cmd.Flags().GetString("cluster")
 		isKubernetes, err := IsKubernetes(clusterID)
@@ -46,7 +52,7 @@ func init() {
 	k8sCmd.AddCommand(k8sStorageCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"cluster", "ID of the Kubernetes cluster", "string", false},
+		[]interface{}{"cluster", "ID of the Kubernetes cluster", "string"},
 	}
 
 	addParameterFlags(parameters, k8sStorageCmd)

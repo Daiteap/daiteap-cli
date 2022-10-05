@@ -8,18 +8,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var projectsCreateCmd = &cobra.Command{
+var projectUpdateCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Use:           "create",
+	Use:           "update",
 	Aliases:       []string{},
-	Short:         "Command to create project at current tenant",
+	Short:         "Command to update project from current tenant",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"id", "name", "description"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
+		id, _ := cmd.Flags().GetString("id")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
-		method := "POST"
-		endpoint := "/projects"
+		method := "PUT"
+		endpoint := "/projects/" + id
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
 
@@ -33,12 +40,13 @@ var projectsCreateCmd = &cobra.Command{
 }
 
 func init() {
-	projectsCmd.AddCommand(projectsCreateCmd)
+	projectCmd.AddCommand(projectUpdateCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"name", "Name of the project.", "string", false},
-		[]interface{}{"description", "Description of the project.", "string", false},
+		[]interface{}{"id", "ID of the project", "string"},
+		[]interface{}{"name", "name of the project", "string"},
+		[]interface{}{"description", "description of the project", "string"},
 	}
 
-	addParameterFlags(parameters, projectsCreateCmd)
+	addParameterFlags(parameters, projectUpdateCmd)
 }

@@ -15,6 +15,12 @@ var workspaceDetailsCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to get workspace's detail information",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"workspace"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		workspaceID, _ := cmd.Flags().GetString("workspace")
 		method := "GET"
@@ -34,7 +40,7 @@ func init() {
 	workspaceCmd.AddCommand(workspaceDetailsCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"workspace", "ID of the workspace.", "string", false},
+		[]interface{}{"workspace", "ID of the workspace.", "string"},
 	}
 
 	addParameterFlags(parameters, workspaceDetailsCmd)
