@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var environmenttemplatesListCmd = &cobra.Command{
+var environmenttemplateListCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "list",
@@ -70,5 +70,5 @@ var environmenttemplatesListCmd = &cobra.Command{
 }
 
 func init() {
-	environmenttemplatesCmd.AddCommand(environmenttemplatesListCmd)
+	environmenttemplateCmd.AddCommand(environmenttemplateListCmd)
 }

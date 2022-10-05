@@ -1,8 +1,6 @@
 package daiteapcli
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
@@ -15,8 +13,7 @@ var servicecatalogCmd = &cobra.Command{
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-            cmd.Help()
-            os.Exit(0)
+            printHelpAndExit(cmd)
         }
         return
     },

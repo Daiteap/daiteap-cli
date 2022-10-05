@@ -15,6 +15,12 @@ var servicecatalogGetConnectionCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to get connection info for specific installed service",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"name", "namespace", "cluster"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 		namespace, _ := cmd.Flags().GetString("namespace")
@@ -37,9 +43,9 @@ func init() {
 	servicecatalogCmd.AddCommand(servicecatalogGetConnectionCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"name", "name of the installed service.", "string", false},
-		[]interface{}{"namespace", "namespace of the installed service.", "string", false},
-		[]interface{}{"cluster", "ID of the cluster the service is installed on.", "string", false},
+		[]interface{}{"name", "name of the installed service", "string"},
+		[]interface{}{"namespace", "namespace of the installed service", "string"},
+		[]interface{}{"cluster", "ID of the cluster the service is installed on", "string"},
 	}
 
 	addParameterFlags(parameters, servicecatalogGetConnectionCmd)

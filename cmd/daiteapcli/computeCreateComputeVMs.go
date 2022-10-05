@@ -19,6 +19,44 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to start task which creates compute VMs",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		templatePath, _ := cmd.Flags().GetString("compute-template")
+
+		if len(templatePath) == 0 {
+			requiredFlags := []string{"name"}
+			checkForRequiredFlags(requiredFlags, cmd)
+
+			googleCredential, _ := cmd.Flags().GetString("google-credential")
+			awsCredential, _ := cmd.Flags().GetString("aws-credential")
+			azureCredential, _ := cmd.Flags().GetString("azure-credential")
+			if len(googleCredential) == 0 && len(awsCredential) == 0 && len(azureCredential) == 0 {
+				fmt.Println("Missing or invalid credential parameter")
+				printHelpAndExit(cmd)
+			}
+
+			if len(googleCredential) > 0 {
+				requiredFlags := []string{"google-region", "google-vpc-cidr", "google-machine-count", "google-zone", "google-instance-type", "google-operating-system"}
+				checkForRequiredFlags(requiredFlags, cmd)
+			}
+			if len(awsCredential) > 0 {
+				requiredFlags := []string{"aws-region", "aws-vpc-cidr", "aws-machine-count", "aws-zone", "aws-instance-type", "aws-operating-system"}
+				checkForRequiredFlags(requiredFlags, cmd)
+			}
+			if len(azureCredential) > 0 {
+				requiredFlags := []string{"azure-region", "azure-vpc-cidr", "azure-machine-count", "azure-zone", "azure-instance-type", "azure-operating-system"}
+				checkForRequiredFlags(requiredFlags, cmd)
+			}
+
+			projectID, _ := cmd.Flags().GetString("projectID")
+			projectName, _ := cmd.Flags().GetString("projectName")
+			if len(projectID) == 0 && len(projectName) == 0 {
+				fmt.Println("Missing or invalid project parameter")
+				printHelpAndExit(cmd)
+			}
+		}
+
+		return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		templatePath, _ := cmd.Flags().GetString("compute-template")
 
@@ -34,29 +72,19 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 			}
 			requestBody = string(content)
 		} else {
-			project, _ := cmd.Flags().GetString("project")
-			if len(project) == 0 {
-				fmt.Println("Missing or invalid \"project\" parameter")
-				os.Exit(0)
+			projectID, _ := cmd.Flags().GetString("projectID")
+			if len(projectID) == 0 {
+				projectName, _ := cmd.Flags().GetString("projectName")
+				projectID, _ = GetProjectID(projectName)
 			}
 
 			name, _ := cmd.Flags().GetString("name")
-			if len(name) == 0 {
-				fmt.Println("Missing or invalid \"name\" parameter")
-				os.Exit(0)
-			}
-
 			googleCredential, _ := cmd.Flags().GetString("google-credential")
 			awsCredential, _ := cmd.Flags().GetString("aws-credential")
 			azureCredential, _ := cmd.Flags().GetString("azure-credential")
 
-			if len(googleCredential) == 0 && len(awsCredential) == 0 && len(azureCredential) == 0 {
-				fmt.Println("Missing or invalid credential parameter")
-				os.Exit(0)
-			}
-
 			body := make(map[string]interface{})
-			body["projectId"] = project
+			body["projectId"] = projectID
 			body["internal_dns_zone"] = "daiteap.internal"
 			body["clusterName"] = name
 			body["onpremiseSelected"] = false
@@ -66,36 +94,11 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 
 			if len(googleCredential) > 0 {
 				googleRegion, _ := cmd.Flags().GetString("google-region")
-				if len(googleRegion) == 0 {
-					fmt.Println("Missing or invalid \"google-region\" parameter")
-					os.Exit(0)
-				}
-
 				gcpCidr, _ := cmd.Flags().GetString("google-vpc-cidr")
-				if len(gcpCidr) == 0 {
-					fmt.Println("Missing or invalid \"google-vpc-cidr\" parameter")
-					os.Exit(0)
-				}
 				gcpMachineCount, _ := cmd.Flags().GetString("google-machine-count")
-				if len(gcpMachineCount) == 0 {
-					fmt.Println("Missing or invalid \"google-machine-count\" parameter")
-					os.Exit(0)
-				}
 				gcpZone, _ := cmd.Flags().GetString("google-zone")
-				if len(gcpZone) == 0 {
-					fmt.Println("Missing or invalid \"google-zone\" parameter")
-					os.Exit(0)
-				}
 				gcpInstanceType, _ := cmd.Flags().GetString("google-instance-type")
-				if len(gcpInstanceType) == 0 {
-					fmt.Println("Missing or invalid \"google-instance-type\" parameter")
-					os.Exit(0)
-				}
 				gcpOperatingSystem, _ := cmd.Flags().GetString("google-operating-system")
-				if len(gcpOperatingSystem) == 0 {
-					fmt.Println("Missing or invalid \"google-operating-system\" parameter")
-					os.Exit(0)
-				}
 
 				body["googleSelected"] = true
 				gcpValidInstanceTypes, err := GetValidInstanceTypes("google", googleCredential, googleRegion, gcpZone)
@@ -132,36 +135,11 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 			}
 			if len(awsCredential) > 0 {
 				awsRegion, _ := cmd.Flags().GetString("aws-region")
-				if len(awsRegion) == 0 {
-					fmt.Println("Missing or invalid \"aws-region\" parameter")
-					os.Exit(0)
-				}
-			
 				awsCidr, _ := cmd.Flags().GetString("aws-vpc-cidr")
-				if len(awsCidr) == 0 {
-					fmt.Println("Missing or invalid \"aws-vpc-cidr\" parameter")
-					os.Exit(0)
-				}
 				awsMachineCount, _ := cmd.Flags().GetString("aws-machine-count")
-				if len(awsMachineCount) == 0 {
-					fmt.Println("Missing or invalid \"aws-machine-count\" parameter")
-					os.Exit(0)
-				}
 				awsZone, _ := cmd.Flags().GetString("aws-zone")
-				if len(awsZone) == 0 {
-					fmt.Println("Missing or invalid \"aws-zone\" parameter")
-					os.Exit(0)
-				}
 				awsInstanceType, _ := cmd.Flags().GetString("aws-instance-type")
-				if len(awsInstanceType) == 0 {
-					fmt.Println("Missing or invalid \"aws-instance-type\" parameter")
-					os.Exit(0)
-				}
 				awsOperatingSystem, _ := cmd.Flags().GetString("aws-operating-system")
-				if len(awsOperatingSystem) == 0 {
-					fmt.Println("Missing or invalid \"aws-operating-system\" parameter")
-					os.Exit(0)
-				}
 
 				body["awsSelected"] = true
 				awsValidInstanceTypes, err := GetValidInstanceTypes("aws", awsCredential, awsRegion, awsZone)
@@ -198,36 +176,11 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 			}
 			if len(azureCredential) > 0 {
 				azureRegion, _ := cmd.Flags().GetString("azure-region")
-				if len(azureRegion) == 0 {
-					fmt.Println("Missing or invalid \"azure-region\" parameter")
-					os.Exit(0)
-				}
-			
 				azureCidr, _ := cmd.Flags().GetString("azure-vpc-cidr")
-				if len(azureCidr) == 0 {
-					fmt.Println("Missing or invalid \"azure-vpc-cidr\" parameter")
-					os.Exit(0)
-				}
 				azureMachineCount, _ := cmd.Flags().GetString("azure-machine-count")
-				if len(azureMachineCount) == 0 {
-					fmt.Println("Missing or invalid \"azure-machine-count\" parameter")
-					os.Exit(0)
-				}
 				azureZone, _ := cmd.Flags().GetString("azure-zone")
-				if len(azureZone) == 0 {
-					fmt.Println("Missing or invalid \"azure-zone\" parameter")
-					os.Exit(0)
-				}
 				azureInstanceType, _ := cmd.Flags().GetString("azure-instance-type")
-				if len(azureInstanceType) == 0 {
-					fmt.Println("Missing or invalid \"azure-instance-type\" parameter")
-					os.Exit(0)
-				}
 				azureOperatingSystem, _ := cmd.Flags().GetString("azure-operating-system")
-				if len(azureOperatingSystem) == 0 {
-					fmt.Println("Missing or invalid \"azure-operating-system\" parameter")
-					os.Exit(0)
-				}
 
 				body["azureSelected"] = true
 				azureValidInstanceTypes, err := GetValidInstanceTypes("azure", azureCredential, azureRegion, azureZone)
@@ -284,35 +237,36 @@ func init() {
 	computeCmd.AddCommand(computeCreateComputeVMsCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"compute-template", "path to compute template json file", "string", true},
+		[]interface{}{"compute-template", "path to compute template json file", "string"},
 
-		[]interface{}{"project", "project in which to add the DLCMv2 environment", "string", true},
-		[]interface{}{"name", "name of the DLCMv2 environment", "string", true},
+		[]interface{}{"projectID", "project ID in which to add the Compute (VMs) environment (only needed if projectName is not set)", "string"},
+		[]interface{}{"projectName", "project name in which to add the Compute (VMs) environment (only needed if projectID is not set)", "string"},
+		[]interface{}{"name", "name of the Compute (VMs) environment", "string"},
 
-		[]interface{}{"google-credential", "ID of google cloud credentials to use for the DLCMv2 environment", "string", true},
-		[]interface{}{"google-region", "GCP region to use for the DLCMv2 environment's resources", "string", true},
-		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the DLCMv2 environment", "string", true},
-		[]interface{}{"aws-region", "AWS region to use for the DLCMv2 environment's resources", "string", true},
-		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the DLCMv2 environment", "string", true},
-		[]interface{}{"azure-region", "Azure region to use for the DLCMv2 environment's resources", "string", true},
+		[]interface{}{"google-credential", "ID of google cloud credentials to use for the Compute (VMs) environment", "string"},
+		[]interface{}{"google-region", "GCP region to use for the Compute (VMs) environment's resources", "string"},
+		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the Compute (VMs) environment", "string"},
+		[]interface{}{"aws-region", "AWS region to use for the Compute (VMs) environment's resources", "string"},
+		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the Compute (VMs) environment", "string"},
+		[]interface{}{"azure-region", "Azure region to use for the Compute (VMs) environment's resources", "string"},
 
-		[]interface{}{"google-vpc-cidr", "google VPC CIDR of the Compute (VMs) environment", "string", true},
-		[]interface{}{"google-machine-count", "google machine count od the Compute (VMs) environment", "string", true},
-		[]interface{}{"google-zone", "google cloud zone for the Compute (VMs) environment", "string", true},
-		[]interface{}{"google-instance-type", "google instance type for the Compute (VMs) environment (S, M, L, XL)", "string", true},
-		[]interface{}{"google-operating-system", "google operating-system for the Compute (VMs) environment (S, M, L, XL)", "string", true},
+		[]interface{}{"google-vpc-cidr", "google VPC CIDR of the Compute (VMs) environment", "string"},
+		[]interface{}{"google-machine-count", "google machine count od the Compute (VMs) environment", "string"},
+		[]interface{}{"google-zone", "google cloud zone for the Compute (VMs) environment", "string"},
+		[]interface{}{"google-instance-type", "google instance type for the Compute (VMs) environment (S, M, L, XL)", "string"},
+		[]interface{}{"google-operating-system", "google operating-system for the Compute (VMs) environment", "string"},
 
-		[]interface{}{"aws-vpc-cidr", "aws VPC CIDR of the Compute (VMs) environment", "string", true},
-		[]interface{}{"aws-machine-count", "aws machine count od the Compute (VMs) environment", "string", true},
-		[]interface{}{"aws-zone", "aws cloud zone for the Compute (VMs) environment", "string", true},
-		[]interface{}{"aws-instance-type", "aws instance type for the Compute (VMs) environment (S, M, L, XL)", "string", true},
-		[]interface{}{"aws-operating-system", "aws operating-system for the Compute (VMs) environment (S, M, L, XL)", "string", true},
+		[]interface{}{"aws-vpc-cidr", "aws VPC CIDR of the Compute (VMs) environment", "string"},
+		[]interface{}{"aws-machine-count", "aws machine count od the Compute (VMs) environment", "string"},
+		[]interface{}{"aws-zone", "aws cloud zone for the Compute (VMs) environment", "string"},
+		[]interface{}{"aws-instance-type", "aws instance type for the Compute (VMs) environment (S, M, L, XL)", "string"},
+		[]interface{}{"aws-operating-system", "aws operating-system for the Compute (VMs) environment", "string"},
 
-		[]interface{}{"azure-vpc-cidr", "azure VPC CIDR of the Compute (VMs) environment", "string", true},
-		[]interface{}{"azure-machine-count", "azure machine count od the Compute (VMs) environment", "string", true},
-		[]interface{}{"azure-zone", "azure cloud zone for the Compute (VMs) environment", "string", true},
-		[]interface{}{"azure-instance-type", "azure instance type for the Compute (VMs) environment (S, M, L, XL)", "string", true},
-		[]interface{}{"azure-operating-system", "azure operating-system for the Compute (VMs) environment (S, M, L, XL)", "string", true},
+		[]interface{}{"azure-vpc-cidr", "azure VPC CIDR of the Compute (VMs) environment", "string"},
+		[]interface{}{"azure-machine-count", "azure machine count od the Compute (VMs) environment", "string"},
+		[]interface{}{"azure-zone", "azure cloud zone for the Compute (VMs) environment", "string"},
+		[]interface{}{"azure-instance-type", "azure instance type for the Compute (VMs) environment (S, M, L, XL)", "string"},
+		[]interface{}{"azure-operating-system", "azure operating-system for the Compute (VMs) environment", "string"},
 	}
 
 	addParameterFlags(parameters, computeCreateComputeVMsCmd)

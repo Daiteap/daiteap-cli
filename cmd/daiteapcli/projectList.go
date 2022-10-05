@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var projectsListCmd = &cobra.Command{
+var projectListCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "list",
@@ -43,5 +43,5 @@ var projectsListCmd = &cobra.Command{
 }
 
 func init() {
-	projectsCmd.AddCommand(projectsListCmd)
+	projectCmd.AddCommand(projectListCmd)
 }

@@ -15,6 +15,18 @@ var computeGetRegionCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to get valid region for Compute (VMs)",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"provider", "cloud-credential"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+		provider, _ := cmd.Flags().GetString("provider")
+		if provider != "google" && provider != "aws" && provider != "azure" {
+			fmt.Println("Invalid provider parameter. Valid parameter values are \"google\", \"aws\" and \"azure\"")
+			printHelpAndExit(cmd)
+		}
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		provider, _ := cmd.Flags().GetString("provider")
 		cloudCredential, _ := cmd.Flags().GetString("cloud-credential")
@@ -37,8 +49,8 @@ func init() {
 	computeCmd.AddCommand(computeGetRegionCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"provider", "cloud provider", "string", false},
-		[]interface{}{"cloud-credential", "ID of cloud credential", "string", false},
+		[]interface{}{"provider", "cloud provider (google, aws, azure)", "string"},
+		[]interface{}{"cloud-credential", "ID of cloud credential", "string"},
 	}
 
 	addParameterFlags(parameters, computeGetRegionCmd)

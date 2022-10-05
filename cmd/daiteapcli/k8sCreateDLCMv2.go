@@ -19,6 +19,44 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to start task which creates DLCMv2 Kubernetes cluster",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		templatePath, _ := cmd.Flags().GetString("dlcmv2-template")
+
+		if len(templatePath) == 0 {
+			requiredFlags := []string{"name", "description", "size", "high-availability"}
+			checkForRequiredFlags(requiredFlags, cmd)
+
+			googleCredential, _ := cmd.Flags().GetString("google-credential")
+			awsCredential, _ := cmd.Flags().GetString("aws-credential")
+			azureCredential, _ := cmd.Flags().GetString("azure-credential")
+			if len(googleCredential) == 0 && len(awsCredential) == 0 && len(azureCredential) == 0 {
+				fmt.Println("Missing or invalid credential parameter")
+				printHelpAndExit(cmd)
+			}
+
+			if len(googleCredential) > 0 {
+				requiredFlags := []string{"google-region"}
+				checkForRequiredFlags(requiredFlags, cmd)
+			}
+			if len(awsCredential) > 0 {
+				requiredFlags := []string{"aws-region"}
+				checkForRequiredFlags(requiredFlags, cmd)
+			}
+			if len(azureCredential) > 0 {
+				requiredFlags := []string{"azure-region"}
+				checkForRequiredFlags(requiredFlags, cmd)
+			}
+
+			projectID, _ := cmd.Flags().GetString("projectID")
+			projectName, _ := cmd.Flags().GetString("projectName")
+			if len(projectID) == 0 && len(projectName) == 0 {
+				fmt.Println("Missing or invalid project parameter")
+				printHelpAndExit(cmd)
+			}
+		}
+
+		return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		templatePath, _ := cmd.Flags().GetString("dlcmv2-template")
 
@@ -34,41 +72,19 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 			}
 			requestBody = string(content)
 		} else {
-			project, _ := cmd.Flags().GetString("project")
-			if len(project) == 0 {
-				fmt.Println("Missing or invalid \"project\" parameter")
-				os.Exit(0)
-			}
-			name, _ := cmd.Flags().GetString("name")
-			if len(name) == 0 {
-				fmt.Println("Missing or invalid \"name\" parameter")
-				os.Exit(0)
-			}
-			description, _ := cmd.Flags().GetString("description")
-			if len(description) == 0 {
-				fmt.Println("Missing or invalid \"description\" parameter")
-				os.Exit(0)
-			}
-			size, _ := cmd.Flags().GetString("size")
-			if len(size) == 0 {
-				fmt.Println("Missing or invalid \"size\" parameter")
-				os.Exit(0)
-			}
-			highAvailability, _ := cmd.Flags().GetString("high-availability")
-			if len(highAvailability) == 0 {
-				fmt.Println("Missing or invalid \"high-availability\" parameter")
-				os.Exit(0)
+			projectID, _ := cmd.Flags().GetString("projectID")
+			if len(projectID) == 0 {
+				projectName, _ := cmd.Flags().GetString("projectName")
+				projectID, _ = GetProjectID(projectName)
 			}
 
+			name, _ := cmd.Flags().GetString("name")
+			description, _ := cmd.Flags().GetString("description")
+			size, _ := cmd.Flags().GetString("size")
+			highAvailability, _ := cmd.Flags().GetString("high-availability")
 			googleCredential, _ := cmd.Flags().GetString("google-credential")
 			awsCredential, _ := cmd.Flags().GetString("aws-credential")
 			azureCredential, _ := cmd.Flags().GetString("azure-credential")
-
-			if len(googleCredential) == 0 && len(awsCredential) == 0 && len(azureCredential) == 0 {
-				fmt.Println("Missing or invalid credential parameter")
-				os.Exit(0)
-			}
-
 			username, _ := daiteapcli.GetUsername()
 
 			workerNodesCount := 0
@@ -102,7 +118,7 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 			kubernetesConfiguration["networkPlugin"] = supportedKubernetesConfig["supportedKubernetesNetworkPlugins"].([]interface{})[0]
 
 			body := make(map[string]interface{})
-			body["projectId"] = project
+			body["projectId"] = projectID
 			body["internal_dns_zone"] = "daiteap.internal"
 			body["clusterName"] = name
 			body["clusterDescription"] = description
@@ -117,10 +133,6 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 
 			if len(googleCredential) > 0 {
 				googleRegion, _ := cmd.Flags().GetString("google-region")
-				if len(googleRegion) == 0 {
-					fmt.Println("Missing or invalid \"google-region\" parameter")
-					os.Exit(0)
-				}
 
 				if len(body["load_balancer_integration"].(string)) == 0 {
 					body["load_balancer_integration"] = "google"
@@ -177,10 +189,6 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 			}
 			if len(awsCredential) > 0 {
 				awsRegion, _ := cmd.Flags().GetString("aws-region")
-				if len(awsRegion) == 0 {
-					fmt.Println("Missing or invalid \"aws-region\" parameter")
-					os.Exit(0)
-				}
 
 				if len(body["load_balancer_integration"].(string)) == 0 {
 					body["load_balancer_integration"] = "aws"
@@ -237,10 +245,6 @@ var k8sCreateDLCMv2Cmd = &cobra.Command{
 			}
 			if len(azureCredential) > 0 {
 				azureRegion, _ := cmd.Flags().GetString("azure-region")
-				if len(azureRegion) == 0 {
-					fmt.Println("Missing or invalid \"azure-region\" parameter")
-					os.Exit(0)
-				}
 
 				if len(body["load_balancer_integration"].(string)) == 0 {
 					body["load_balancer_integration"] = "azure"
@@ -318,20 +322,21 @@ func init() {
 	k8sCmd.AddCommand(k8sCreateDLCMv2Cmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"dlcmv2-template", "path to DLCMv2 template json file", "string", true},
+		[]interface{}{"dlcmv2-template", "path to DLCMv2 template json file", "string"},
 
-		[]interface{}{"project", "project in which to add the DLCMv2 environment", "string", true},
-		[]interface{}{"name", "name of the DLCMv2 environment", "string", true},
-		[]interface{}{"description", "description of the DLCMv2 environment", "string", true},
-		[]interface{}{"google-credential", "ID of google cloud credentials to use for the DLCMv2 environment", "string", true},
-		[]interface{}{"google-region", "GCP region to use for the DLCMv2 environment's resources", "string", true},
-		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the DLCMv2 environment", "string", true},
-		[]interface{}{"aws-region", "AWS region to use for the DLCMv2 environment's resources", "string", true},
-		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the DLCMv2 environment", "string", true},
-		[]interface{}{"azure-region", "Azure region to use for the DLCMv2 environment's resources", "string", true},
+		[]interface{}{"projectID", "project ID in which to add the DLCMv2 environment (only needed if projectName is not set)", "string"},
+		[]interface{}{"projectName", "project name in which to add the DLCMv2 environment (only needed if projectID is not set)", "string"},
+		[]interface{}{"name", "name of the DLCMv2 environment", "string"},
+		[]interface{}{"description", "description of the DLCMv2 environment", "string"},
+		[]interface{}{"google-credential", "ID of google cloud credentials to use for the DLCMv2 environment", "string"},
+		[]interface{}{"google-region", "GCP region to use for the DLCMv2 environment's resources", "string"},
+		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the DLCMv2 environment", "string"},
+		[]interface{}{"aws-region", "AWS region to use for the DLCMv2 environment's resources", "string"},
+		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the DLCMv2 environment", "string"},
+		[]interface{}{"azure-region", "Azure region to use for the DLCMv2 environment's resources", "string"},
 
-		[]interface{}{"size", "size of the DLCMv2 environment (S, M, L, XL)", "string", true},
-		[]interface{}{"high-availability", "high availability DLCMv2 environment (true, false)", "string", true},
+		[]interface{}{"size", "size of the DLCMv2 environment (S, M, L, XL)", "string"},
+		[]interface{}{"high-availability", "high availability DLCMv2 environment (true, false)", "string"},
 	}
 
 	addParameterFlags(parameters, k8sCreateDLCMv2Cmd)

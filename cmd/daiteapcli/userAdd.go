@@ -8,13 +8,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var usersAddCmd = &cobra.Command{
+var userAddCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "add",
 	Aliases:       []string{},
 	Short:         "Command to add user to the workspace",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"username","firstname","lastname","email","company","phone","sshpubkey","user-role"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
 		firstname, _ := cmd.Flags().GetString("firstname")
@@ -39,18 +45,18 @@ var usersAddCmd = &cobra.Command{
 }
 
 func init() {
-	usersCmd.AddCommand(usersAddCmd)
+	userCmd.AddCommand(userAddCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"username", "username of the user", "string", false},
-		[]interface{}{"firstname", "first name of the user", "string", false},
-		[]interface{}{"lastname", "last name of the user", "string", false},
-		[]interface{}{"email", "email of the user", "string", false},
-		[]interface{}{"company", "company of the user", "string", false},
-		[]interface{}{"phone", "phone of the user", "string", false},
-		[]interface{}{"sshpubkey", "ssh public key of the user", "string", false},
-		[]interface{}{"user-role", "role of the user", "string", false},
+		[]interface{}{"username", "username of the user", "string"},
+		[]interface{}{"firstname", "first name of the user", "string"},
+		[]interface{}{"lastname", "last name of the user", "string"},
+		[]interface{}{"email", "email of the user", "string"},
+		[]interface{}{"company", "company of the user", "string"},
+		[]interface{}{"phone", "phone of the user", "string"},
+		[]interface{}{"sshpubkey", "ssh public key of the user", "string"},
+		[]interface{}{"user-role", "role of the user", "string"},
 	}
 
-	addParameterFlags(parameters, usersAddCmd)
+	addParameterFlags(parameters, userAddCmd)
 }

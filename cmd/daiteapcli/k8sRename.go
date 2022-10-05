@@ -16,6 +16,12 @@ var k8sRenameCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to rename Kubernetes cluster",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"cluster", "name"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		clusterID, _ := cmd.Flags().GetString("cluster")
 		isKubernetes, err := IsKubernetes(clusterID)
@@ -47,8 +53,8 @@ func init() {
 	k8sCmd.AddCommand(k8sRenameCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"cluster", "ID of the Kubernetes cluster", "string", false},
-		[]interface{}{"name", "new name of the Kubernetes cluster", "string", false},
+		[]interface{}{"cluster", "ID of the Kubernetes cluster", "string"},
+		[]interface{}{"name", "new name of the Kubernetes cluster", "string"},
 	}
 
 	addParameterFlags(parameters, k8sRenameCmd)

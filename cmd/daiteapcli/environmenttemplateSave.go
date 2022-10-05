@@ -8,13 +8,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var environmenttemplatesSaveCmd = &cobra.Command{
+var environmenttemplateSaveCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "save",
 	Aliases:       []string{},
 	Short:         "Command to create environment template from existing environment",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"name", "environment"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 		environmentID, _ := cmd.Flags().GetString("environment")
@@ -33,12 +39,12 @@ var environmenttemplatesSaveCmd = &cobra.Command{
 }
 
 func init() {
-	environmenttemplatesCmd.AddCommand(environmenttemplatesSaveCmd)
+	environmenttemplateCmd.AddCommand(environmenttemplateSaveCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"name", "name of the environment template", "string", false},
-		[]interface{}{"environment", "ID of the environment from which to create the template", "string", false},
+		[]interface{}{"name", "name of the environment template", "string"},
+		[]interface{}{"environment", "ID of the environment from which to create the template", "string"},
 	}
 
-	addParameterFlags(parameters, environmenttemplatesSaveCmd)
+	addParameterFlags(parameters, environmenttemplateSaveCmd)
 }

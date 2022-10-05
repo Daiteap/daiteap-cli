@@ -16,6 +16,12 @@ var computeRenameCmd = &cobra.Command{
 	Aliases:       []string{},
 	Short:         "Command to rename Compute (VMs)",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"compute", "name"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		clusterID, _ := cmd.Flags().GetString("compute")
 		isCompute, err := IsCompute(clusterID)
@@ -47,8 +53,8 @@ func init() {
 	computeCmd.AddCommand(computeRenameCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"compute", "ID of the Compute (VMs)", "string", false},
-		[]interface{}{"name", "new name of the Compute (VMs)", "string", false},
+		[]interface{}{"compute", "ID of the Compute (VMs)", "string"},
+		[]interface{}{"name", "new name of the Compute (VMs)", "string"},
 	}
 
 	addParameterFlags(parameters, computeRenameCmd)

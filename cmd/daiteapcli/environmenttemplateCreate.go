@@ -10,13 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var environmenttemplatesCreateCmd = &cobra.Command{
+var environmenttemplateCreateCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Use:           "create",
 	Aliases:       []string{},
 	Short:         "Command to create environment template in current workspace",
 	Args:          cobra.ExactArgs(0),
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		requiredFlags := []string{"environmenttemplate"}
+		checkForRequiredFlags(requiredFlags, cmd)
+
+        return nil
+    },
 	Run: func(cmd *cobra.Command, args []string) {
 		environmenttemplatePath, _ := cmd.Flags().GetString("environmenttemplate")
 		method := "POST"
@@ -44,11 +50,11 @@ var environmenttemplatesCreateCmd = &cobra.Command{
 }
 
 func init() {
-	environmenttemplatesCmd.AddCommand(environmenttemplatesCreateCmd)
+	environmenttemplateCmd.AddCommand(environmenttemplateCreateCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"environmenttemplate", "path to environment template json file", "string", false},
+		[]interface{}{"environmenttemplate", "path to environment template json file", "string"},
 	}
 
-	addParameterFlags(parameters, environmenttemplatesCreateCmd)
+	addParameterFlags(parameters, environmenttemplateCreateCmd)
 }

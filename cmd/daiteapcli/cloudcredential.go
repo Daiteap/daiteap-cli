@@ -1,27 +1,24 @@
 package daiteapcli
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
-var cloudcredentialsCmd = &cobra.Command{
+var cloudcredentialCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "cloud-credentials",
+    Use:   "cloud-credential",
     Aliases: []string{"ccred"},
     Short:  "Command to interact with cloud credentials from current tenant",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-            cmd.Help()
-            os.Exit(0)
+            printHelpAndExit(cmd)
         }
         return
     },
 }
 
 func init() {
-    rootCmd.AddCommand(cloudcredentialsCmd)
+    rootCmd.AddCommand(cloudcredentialCmd)
 }

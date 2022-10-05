@@ -1,27 +1,24 @@
 package daiteapcli
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
-var usersCmd = &cobra.Command{
+var userCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-    Use:   "users",
+    Use:   "user",
     Aliases: []string{},
     Short:  "Command to interact with users",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-            cmd.Help()
-            os.Exit(0)
+            printHelpAndExit(cmd)
         }
         return
     },
 }
 
 func init() {
-    rootCmd.AddCommand(usersCmd)
+    rootCmd.AddCommand(userCmd)
 }
