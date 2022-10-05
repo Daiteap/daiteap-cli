@@ -19,7 +19,7 @@ func GetActiveToken() (string, error) {
 		return "", err
 	}
 	if !(len(authConfig.ServerURL) > 0) {
-		err := fmt.Errorf("Error reading server URL configuration. Please update it.")
+		err := fmt.Errorf("Error reading configuration. Please update it.")
 		return "", err
 	}
 
@@ -85,7 +85,7 @@ func Login() error {
 		return err
 	}
 	if !(len(authConfig.ServerURL) > 0) {
-		err := fmt.Errorf("Error reading server URL configuration. Please update it.")
+		err := fmt.Errorf("Error reading configuration. Please update it.")
 		return err
 	}
 
@@ -125,7 +125,7 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 		return emptyResponseBody, err
 	}
 	if !(len(authConfig.ServerURL) > 0) {
-		err := fmt.Errorf("Error reading server URL configuration. Please update it.")
+		err := fmt.Errorf("Error reading configuration. Please update it.")
 		return emptyResponseBody, err
 	}
 
@@ -174,7 +174,7 @@ func GetUsername() (string, error) {
 		return "", err
 	}
 	if !(len(authConfig.ServerURL) > 0) {
-		err := fmt.Errorf("Error reading server URL configuration. Please update it.")
+		err := fmt.Errorf("Error reading configuration. Please update it.")
 		return "", err
 	}
 
@@ -248,7 +248,7 @@ func GetUsername() (string, error) {
 	return username, nil
 }
 
-func UpdateServerURL(serverURL string) (error) {
+func UpdateConfig(serverURL string) (error) {
 	var cfg *authUtils.IConfig = &authUtils.IConfig{
 		AccessToken:  "",
 		RefreshToken: "",
@@ -262,4 +262,21 @@ func UpdateServerURL(serverURL string) (error) {
 	}
 
 	return nil
+}
+
+func GetConfig() (map[string]interface{}, error) {
+	config := make(map[string]interface{})
+	authConfig, err := authUtils.GetConfig()
+	if err != nil {
+		err := fmt.Errorf("Error reading config. Please update it.")
+		return config, err
+	}
+	if !(len(authConfig.ServerURL) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return config, err
+	}
+
+	config["Server URL"] = authConfig.ServerURL
+
+	return config, nil
 }

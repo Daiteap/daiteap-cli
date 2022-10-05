@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var configChangeServerCmd = &cobra.Command{
+var configSetCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	Use:           "change-server",
+	Use:           "set",
 	Aliases:       []string{},
-	Short:         "Command to change server URL that the client uses",
+	Short:         "Command to change configurations that the client uses",
 	Args:          cobra.ExactArgs(0),
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		requiredFlags := []string{"server-url"}
@@ -23,7 +23,7 @@ var configChangeServerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		serverURL, _ := cmd.Flags().GetString("server-url")
 
-		err := daiteapcli.UpdateServerURL(serverURL)
+		err := daiteapcli.UpdateConfig(serverURL)
 
 		if err != nil {
 			fmt.Println(err)
@@ -34,11 +34,11 @@ var configChangeServerCmd = &cobra.Command{
 }
 
 func init() {
-	configCmd.AddCommand(configChangeServerCmd)
+	configCmd.AddCommand(configSetCmd)
 
 	parameters := [][]interface{}{
 		[]interface{}{"server-url", "URL of the new server. Example - https://app.daiteap.com", "string"},
 	}
 
-	addParameterFlags(parameters, configChangeServerCmd)
+	addParameterFlags(parameters, configSetCmd)
 }
