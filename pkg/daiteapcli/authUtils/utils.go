@@ -83,10 +83,12 @@ func StartServer(config Config) {
 							var f interface{}
 							json.Unmarshal(body, &f)
 							m := f.(map[string]interface{})
+							authConfig, _ := GetConfig()
 
 							var cfg *IConfig = &IConfig{
 								AccessToken:  m["access_token"].(string),
 								RefreshToken: m["refresh_token"].(string),
+								ServerURL:    authConfig.ServerURL,
 							}
 
 							SaveConfig(cfg)
