@@ -8,7 +8,7 @@ var servicecatalogCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
     Use:   "service-catalog",
-    Aliases: []string{"serv"},
+    Aliases: []string{"sc", "catalog"},
     Short:  "Command to interact with service catalog.",
     Args:  cobra.ExactArgs(0),
     Run: func(cmd *cobra.Command, args []string) {
