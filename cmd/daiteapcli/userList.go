@@ -28,6 +28,24 @@ var userListCmd = &cobra.Command{
 			if outputFormat == "json" {
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
+			} else if outputFormat == "wide" {
+				tbl := table.New("ID", "User", "Role", "Projects", "Phone Number")
+
+				for _, user := range responseBody["users_list"].([]interface{}) {
+					userObject := user.(map[string]interface{})
+					projects := ""
+					for _, project := range userObject["projects"].([]interface {}) {
+						if len(projects) == 0 {
+							projects += project.(string)
+						} else {
+							projects += ", " + project.(string)
+						}
+					}
+
+					tbl.AddRow(userObject["id"], userObject["username"], userObject["role"], projects, userObject["phone"])
+				}
+
+				tbl.Print()
 			} else {
 				tbl := table.New("User", "Role", "Projects", "Phone Number")
 

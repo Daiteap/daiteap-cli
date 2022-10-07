@@ -29,6 +29,41 @@ var environmenttemplateListCmd = &cobra.Command{
 			if outputFormat == "json" {
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
+			} else if outputFormat == "wide" {
+				tbl := table.New("ID", "Name", "Description", "Providers", "Type", "Created at", "Created by")
+
+				for _, template := range responseBody["environmentTemplates"].([]interface{}) {
+					templateObject := template.(map[string]interface{})
+					providers := strings.ReplaceAll(templateObject["providers"].(string), "[", "")
+					providers = strings.ReplaceAll(providers, "]", "")
+					providers = strings.ReplaceAll(providers, "\"", "")
+					providersArray := strings.Split(providers, ",")
+					providers = ""
+					for _, provider := range providersArray {
+						if len(providers) == 0 {
+							providers += provider
+						} else {
+							providers += ", " + provider
+						}
+					}
+
+					environmentType := ""
+					switch templateObject["type"].(float64) {
+					case 1:
+						environmentType = "DLCM"
+					case 3:
+						environmentType = "DK3S"
+					case 5:
+						environmentType = "CAPI"
+					case 7:
+						environmentType = "DLCMv2"
+					default:
+						environmentType = "Compute (VM)"
+					}
+					tbl.AddRow(templateObject["id"], templateObject["name"], templateObject["description"], providers, environmentType, templateObject["created_at"], templateObject["contact"])
+				}
+
+				tbl.Print()
 			} else {
 				tbl := table.New("Name", "Description", "Providers", "Type", "Created at", "Created by")
 

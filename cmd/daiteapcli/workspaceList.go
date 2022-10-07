@@ -28,6 +28,15 @@ var workspaceListCmd = &cobra.Command{
 			if outputFormat == "json" {
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
+			} else if outputFormat == "wide" {
+				tbl := table.New("ID", "Name", "Owner", "Email", "Phone", "Created at", "Updated at", "Active")
+
+				for _, workspace := range responseBody["activeTenants"].([]interface{}) {
+					workspaceObject := workspace.(map[string]interface{})
+					tbl.AddRow(workspaceObject["id"], workspaceObject["name"], workspaceObject["owner"], workspaceObject["email"], workspaceObject["phone"], workspaceObject["createdAt"], workspaceObject["updatedAt"], workspaceObject["selected"])
+				}
+
+				tbl.Print()
 			} else {
 				tbl := table.New("Name", "Owner", "Email", "Phone", "Created at", "Updated at", "Active")
 

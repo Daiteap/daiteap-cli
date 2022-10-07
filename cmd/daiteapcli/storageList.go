@@ -28,6 +28,16 @@ var storageListCmd = &cobra.Command{
 			if outputFormat == "json" {
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
+			} else if outputFormat == "wide" {
+				tbl := table.New("ID", "Name", "Cloud", "Project", "Credential", "Created At")
+
+				for _, bucket := range responseBody["data"].([]interface{}) {
+					bucketObject := bucket.(map[string]interface{})
+
+					tbl.AddRow(bucketObject["id"], bucketObject["name"], bucketObject["provider"], bucketObject["project"], bucketObject["credential"], bucketObject["created_at"])
+				}
+
+				tbl.Print()
 			} else {
 				tbl := table.New("Name", "Cloud", "Project", "Credential", "Created At")
 

@@ -28,6 +28,15 @@ var projectListCmd = &cobra.Command{
 			if outputFormat == "json" {
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
+			} else if outputFormat == "wide" {
+				tbl := table.New("ID", "Name", "Description", "Created at", "Created by")
+
+				for _, project := range responseBody["data"].([]interface{}) {
+					projectObject := project.(map[string]interface{})
+					tbl.AddRow(projectObject["id"], projectObject["name"], projectObject["description"], projectObject["created_at"], projectObject["contact"])
+				}
+
+				tbl.Print()
 			} else {
 				tbl := table.New("Name", "Description", "Created at", "Created by")
 
