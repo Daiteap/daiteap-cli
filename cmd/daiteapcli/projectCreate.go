@@ -15,7 +15,7 @@ var projectCreateCmd = &cobra.Command{
 	Short:         "Command to create project at current tenant",
 	Args:          cobra.ExactArgs(0),
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		requiredFlags := []string{"name", "description"}
+		requiredFlags := []string{"name"}
 		checkForRequiredFlags(requiredFlags, cmd)
 
         return nil
