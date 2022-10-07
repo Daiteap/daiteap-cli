@@ -35,5 +35,5 @@ func Execute() {
 }
 
 func init() {
-    rootCmd.PersistentFlags().String("output", "", "Specify output format.")
+    rootCmd.PersistentFlags().StringP("output", "o", "", "Specify output format.")
 }
