@@ -147,10 +147,56 @@ func RefreshAccessToken (config *Config) error {
 		return err
 	}
 
-	request, _ := BuildRefreshRequest(config.KeycloakConfig, authConfig.RefreshToken)
+	request, err := BuildRefreshRequest(config.KeycloakConfig, authConfig.RefreshToken)
 
 	if err != nil {
 		err := fmt.Errorf("Error building refresh token request")
+		return err
+	}
+
+	var resp *http.Response
+	var body []byte
+	resp, _ = http.DefaultClient.Do(request)
+	body, _ = ioutil.ReadAll(io.LimitReader(resp.Body, 1<<20))
+	defer resp.Body.Close()
+	if resp.StatusCode == 200 {
+		content, _, _ := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		switch content {
+		case "application/json":
+			var f interface{}
+			json.Unmarshal(body, &f)
+			m := f.(map[string]interface{})
+
+			authConfig.AccessToken = m["access_token"].(string)
+
+			err := SaveConfig(&authConfig)
+			if err != nil {
+				return err
+			}
+		default:
+			err := fmt.Errorf("invalid Content type")
+			return err
+		}
+	} else {
+		err := fmt.Errorf("invalid Status code (%v), (%v)", resp.StatusCode, string(body))
+		return err
+	}
+
+	return nil
+}
+
+func Logout (config *Config) error {
+	authConfig, err := GetConfig()
+
+	if err != nil {
+		err := fmt.Errorf("Error getting authentication config")
+		return err
+	}
+
+	request, err := BuildLogoutRequest(config.KeycloakConfig, authConfig.AccessToken)
+
+	if err != nil {
+		err := fmt.Errorf("Error building logout request")
 		return err
 	}
 

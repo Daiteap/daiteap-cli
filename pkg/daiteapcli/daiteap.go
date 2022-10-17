@@ -114,6 +114,34 @@ func Login() error {
 	return nil
 }
 
+func Logout() error {
+	authConfig, err := authUtils.GetConfig()
+	if err != nil {
+		err := fmt.Errorf("Error reading config. Please update it.")
+		return err
+	}
+	if !(len(authConfig.ServerURL) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return err
+	}
+
+	config := authUtils.Config{
+		KeycloakConfig: authUtils.KeycloakConfig{
+			KeycloakURL: authConfig.ServerURL + "/auth",
+			Realm:       "Daiteap",
+			ClientID:    "daiteap-cli",
+		},
+		EmbeddedServerConfig: authUtils.EmbeddedServerConfig{
+			Port:         3000,
+			CallbackPath: "sso-callback",
+		},
+	}
+
+	authUtils.Logout(&config)
+
+	return nil
+}
+
 func SendDaiteapRequest(method string, endpoint string, requestBody string) (map[string]interface{}, error) {
 	var resp *http.Response
 	var responseBody []byte
