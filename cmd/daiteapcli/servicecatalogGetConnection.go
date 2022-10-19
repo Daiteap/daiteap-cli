@@ -22,13 +22,14 @@ var servicecatalogGetConnectionCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		name, _ := cmd.Flags().GetString("name")
 		namespace, _ := cmd.Flags().GetString("namespace")
 		clusterID, _ := cmd.Flags().GetString("cluster")
 		method := "POST"
 		endpoint := "/getServiceConnectionInfo"
 		requestBody := "{\"name\": \"" + name + "\", \"namespace\": \"" + namespace + "\", \"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

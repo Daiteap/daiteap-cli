@@ -17,10 +17,11 @@ var workspaceListCmd = &cobra.Command{
 	Short:         "Command to list workspaces for current user",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		outputFormat, _ := cmd.Flags().GetString("output")
 		method := "GET"
 		endpoint := "/getActiveTenants"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose)
 
 		if err != nil {
 			fmt.Println(err)

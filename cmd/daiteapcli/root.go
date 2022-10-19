@@ -36,4 +36,8 @@ func Execute() {
 
 func init() {
     rootCmd.PersistentFlags().StringP("output", "o", "", "Specify output format.")
+
+    var flag string
+    rootCmd.PersistentFlags().StringVarP(&flag, "verbose", "v", "false", "Verbose mode.")
+    rootCmd.PersistentFlags().Lookup("verbose").NoOptDefVal = "true"
 }

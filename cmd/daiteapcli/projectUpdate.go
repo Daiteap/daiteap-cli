@@ -22,13 +22,14 @@ var projectUpdateCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		id, _ := cmd.Flags().GetString("id")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
 		method := "PUT"
 		endpoint := "/projects/" + id
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

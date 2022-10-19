@@ -22,11 +22,12 @@ var workspaceSelectCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		workspaceID, _ := cmd.Flags().GetString("workspace")
 		method := "POST"
 		endpoint := "/selectTenant"
 		requestBody := "{\"selectedTenant\": \"" + workspaceID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

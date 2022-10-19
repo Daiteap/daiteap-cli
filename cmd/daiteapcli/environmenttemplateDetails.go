@@ -22,10 +22,11 @@ var environmenttemplateDetailsCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		environmenttemplateID, _ := cmd.Flags().GetString("environmenttemplate")
 		method := "GET"
 		endpoint := "/environmenttemplates/get/" + environmenttemplateID
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose)
 
 		if err != nil {
 			fmt.Println(err)

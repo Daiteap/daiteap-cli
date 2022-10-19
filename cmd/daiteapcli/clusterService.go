@@ -9,7 +9,7 @@ import (
 func IsKubernetes(clusterID string) (bool, error) {
     method := "POST"
     endpoint := "/getClusterList"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false")
 
     if err != nil {
         return false, err
@@ -35,7 +35,7 @@ func IsKubernetes(clusterID string) (bool, error) {
 func IsCompute(clusterID string) (bool, error) {
     method := "POST"
     endpoint := "/getClusterList"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false")
 
     if err != nil {
         return false, err
@@ -60,7 +60,7 @@ func GetValidZones(provider string, credentialID string, region string) ([]strin
     method := "POST"
     endpoint := "/getValidZones"
     requestBody := "{\"provider\": \"" + provider + "\", \"accountId\": " + credentialID + ", \"region\": \"" + region + "\"}"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "false")
 
     var zones []string
 
@@ -81,7 +81,7 @@ func GetValidInstanceTypes(provider string, credentialID string, region string, 
     method := "POST"
     endpoint := "/getValidInstances"
     requestBody := "{\"provider\": \"" + provider + "\", \"accountId\": " + credentialID + ", \"region\": \"" + region + "\", \"zone\": \"" + zone + "\"}"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "false")
 
     instances := make(map[string]string)
 
@@ -108,7 +108,7 @@ func GetValidInstanceTypes(provider string, credentialID string, region string, 
 func GetValidOperatingSystems(provider string, credentialID string, region string, environmentType string, username string) ([]string, error) {
     method := "GET"
     endpoint := "/getValidOperatingSystems/" + username + "/" + provider + "/" + credentialID + "/" + environmentType + "/" + region
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false")
 
     var operatingSystems []string
 
@@ -129,7 +129,7 @@ func GetValidOperatingSystems(provider string, credentialID string, region strin
 func GetSupportedKubernetesConfig() (map[string]interface{}, error) {
     method := "GET"
     endpoint := "/getsupporteddlcmv2configurations"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false")
 
     k8sConfigs := make(map[string]interface{})
 

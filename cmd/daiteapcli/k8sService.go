@@ -13,6 +13,7 @@ import (
 )
 
 func CreateDLCMv2(cmd *cobra.Command) () {
+    verbose, _ := cmd.Flags().GetString("verbose")
     templatePath, _ := cmd.Flags().GetString("dlcmv2-template")
 
     requestBody := ""
@@ -262,7 +263,7 @@ func CreateDLCMv2(cmd *cobra.Command) () {
 
     method := "POST"
     endpoint := "/createDlcmV2"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
     if err != nil {
         fmt.Println(err)

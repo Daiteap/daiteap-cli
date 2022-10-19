@@ -44,6 +44,7 @@ var storageCreateCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		provider, _ := cmd.Flags().GetString("provider")
 		credentialID, _ := cmd.Flags().GetString("credential")
 		name, _ := cmd.Flags().GetString("name")
@@ -70,7 +71,7 @@ var storageCreateCmd = &cobra.Command{
 			requestBody = "{\"provider\": \"" + provider + "\", \"credential\": \"" + credentialID + "\", \"project\": \"" + projectID + "\", \"name\": \"" + name + "\", \"storage_account_url\": \"" + storageAccount + "\"}"
 		}
 
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

@@ -23,7 +23,8 @@ var cloudcredentialValidateCmd = &cobra.Command{
 
         return nil
     },
-	Run: func(cmd *cobra.Command, args []string) {		
+	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		cloudcredentialID, _ := cmd.Flags().GetString("cloudcredential")
 		method := "POST"
 		endpoint := "/validateCredentials"
@@ -35,7 +36,7 @@ var cloudcredentialValidateCmd = &cobra.Command{
 		}
 
 		requestBody := "{\"account_id\": " + cloudcredentialID + ", \"tenant_id\": \"" + workspace["id"] + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(0)
@@ -46,7 +47,7 @@ var cloudcredentialValidateCmd = &cobra.Command{
 		requestBody = "{\"taskId\": \"" + taskID.(string) + "\"}"
 		
 		for i := 0; i < 20; i++ {
-			responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+			responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(0)

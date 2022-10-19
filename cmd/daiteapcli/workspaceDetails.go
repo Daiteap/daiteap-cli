@@ -22,10 +22,11 @@ var workspaceDetailsCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		workspaceID, _ := cmd.Flags().GetString("workspace")
 		method := "GET"
 		endpoint := "/account/tenant/" + workspaceID
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose)
 
 		if err != nil {
 			fmt.Println(err)

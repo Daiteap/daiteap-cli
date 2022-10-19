@@ -22,10 +22,11 @@ var cloudcredentialDetailsCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		cloudcredentialID, _ := cmd.Flags().GetString("cloudcredential")
 		method := "GET"
 		endpoint := "/cloud-credentials/" + cloudcredentialID
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose)
 
 		if err != nil {
 			fmt.Println(err)

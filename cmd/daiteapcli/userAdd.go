@@ -22,6 +22,7 @@ var userAddCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		username, _ := cmd.Flags().GetString("username")
 		firstname, _ := cmd.Flags().GetString("firstname")
 		lastname, _ := cmd.Flags().GetString("lastname")
@@ -33,7 +34,7 @@ var userAddCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/addnewuser"
 		requestBody := "{\"username\": \"" + username + "\", \"firstname\": \"" + firstname + "\", \"lastname\": \"" + lastname + "\", \"email\": \"" + email + "\", \"company\": \"" + company + "\", \"phone\": \"" + phone + "\", \"sshpubkey\": \"" + sshpubkey + "\", \"userRole\": \"" + userRole + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

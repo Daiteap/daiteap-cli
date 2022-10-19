@@ -23,6 +23,7 @@ var computeRenameCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		clusterID, _ := cmd.Flags().GetString("compute")
 		isCompute, err := IsCompute(clusterID)
 		if err != nil {
@@ -38,7 +39,7 @@ var computeRenameCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/renameCluster"
 		requestBody := "{\"clusterID\": \"" + clusterID + "\", \"clusterName\": \"" + name + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

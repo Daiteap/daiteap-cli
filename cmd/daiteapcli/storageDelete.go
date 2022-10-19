@@ -22,10 +22,11 @@ var storageDeleteCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		bucketID, _ := cmd.Flags().GetString("bucket")
 		method := "DELETE"
 		endpoint := "/buckets/" + bucketID
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose)
 
 		if err != nil {
 			fmt.Println(err)

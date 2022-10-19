@@ -28,6 +28,7 @@ var computeGetOsCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		provider, _ := cmd.Flags().GetString("provider")
 		cloudCredential, _ := cmd.Flags().GetString("cloud-credential")
 		region, _ := cmd.Flags().GetString("region")
@@ -35,7 +36,7 @@ var computeGetOsCmd = &cobra.Command{
 
 		method := "GET"
 		endpoint := "/getValidOperatingSystems/" + username + "/" + provider + "/" + cloudCredential + "/7/" + region
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose)
 
 		if err != nil {
 			fmt.Println(err)

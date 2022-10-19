@@ -142,7 +142,7 @@ func Logout() error {
 	return nil
 }
 
-func SendDaiteapRequest(method string, endpoint string, requestBody string) (map[string]interface{}, error) {
+func SendDaiteapRequest(method string, endpoint string, requestBody string, verbose string) (map[string]interface{}, error) {
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
@@ -172,6 +172,9 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 	resp, err = http.DefaultClient.Do(request)
 	if err == nil {
 		responseBody, err = ioutil.ReadAll(io.LimitReader(resp.Body, 1<<20))
+		if verbose != "false" {
+			fmt.Println(string(responseBody) + "\n\n")
+		}
 		defer resp.Body.Close()
 		if resp.StatusCode >= 200 && resp.StatusCode <= 300 {
 			var f interface{}

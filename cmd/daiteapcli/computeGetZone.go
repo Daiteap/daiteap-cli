@@ -28,6 +28,7 @@ var computeGetZoneCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		provider, _ := cmd.Flags().GetString("provider")
 		cloudCredential, _ := cmd.Flags().GetString("cloud-credential")
 		region, _ := cmd.Flags().GetString("region")
@@ -35,7 +36,7 @@ var computeGetZoneCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/getValidZones"
 		requestBody := "{\"provider\": \"" + provider + "\", \"accountId\": " + cloudCredential + ",\"region\": \"" + region + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

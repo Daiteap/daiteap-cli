@@ -22,11 +22,12 @@ var environmenttemplateDeleteCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		environmenttemplateID, _ := cmd.Flags().GetString("environmenttemplate")
 		method := "POST"
 		endpoint := "/environmenttemplates/delete"
 		requestBody := "{\"environmentTemplateId\": \"" + environmenttemplateID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

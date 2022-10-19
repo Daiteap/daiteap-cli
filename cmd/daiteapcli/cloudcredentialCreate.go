@@ -40,6 +40,7 @@ var cloudcredentialCreateCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		provider, _ := cmd.Flags().GetString("provider")
 		shared, _ := cmd.Flags().GetString("shared-credentials")
 		label, _ := cmd.Flags().GetString("label")
@@ -97,7 +98,7 @@ var cloudcredentialCreateCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)

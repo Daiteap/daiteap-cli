@@ -17,10 +17,11 @@ var userListCmd = &cobra.Command{
 	Short:         "Command to list all users in the workspace",
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		outputFormat, _ := cmd.Flags().GetString("output")
 		method := "GET"
 		endpoint := "/getuserslist"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose)
 
 		if err != nil {
 			fmt.Println(err)

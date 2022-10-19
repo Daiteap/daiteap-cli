@@ -28,13 +28,14 @@ var k8sGetRegionCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
 		provider, _ := cmd.Flags().GetString("provider")
 		cloudCredential, _ := cmd.Flags().GetString("cloud-credential")
 
 		method := "POST"
 		endpoint := "/getValidRegions"
 		requestBody := "{\"provider\": \"" + provider + "\", \"accountId\": " + cloudCredential + "}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
 
 		if err != nil {
 			fmt.Println(err)
