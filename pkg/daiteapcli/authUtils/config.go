@@ -75,7 +75,21 @@ func GetConfig() (IConfig, error) {
 
 	content, err := ioutil.ReadFile(file)
 	if err != nil {
-		return IConfig{}, fmt.Errorf("%v: %w", "unable to read config", err)
+		var cfg IConfig = IConfig{
+			AccessToken:  "",
+			RefreshToken: "",
+			ServerURL:    "https://app.daiteap.com",
+		}
+
+		err := SaveConfig(&cfg)
+		if err != nil {
+			err := fmt.Errorf("Error saving configuration.")
+			return IConfig{}, err
+		}
+		content, err = ioutil.ReadFile(file)
+		if err != nil {
+			return IConfig{}, fmt.Errorf("%v: %w", "unable to read config", err)
+		}
 	}
 
 	var f interface{}
