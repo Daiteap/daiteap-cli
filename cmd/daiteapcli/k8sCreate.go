@@ -74,18 +74,18 @@ func init() {
 
 	parameters := [][]interface{}{
 		[]interface{}{"lcm", "type of kubernetes environment", "string"},
-		[]interface{}{"dlcmv2-template", "path to DLCMv2 template json file", "string"},
+		[]interface{}{"dlcmv2-template", "path to DLCMv2 template json file (optional)", "string"},
 
 		[]interface{}{"projectID", "project ID in which to add the DLCMv2 environment (only needed if projectName is not set)", "string"},
 		[]interface{}{"projectName", "project name in which to add the DLCMv2 environment (only needed if projectID is not set)", "string"},
 		[]interface{}{"name", "name of the DLCMv2 environment", "string"},
 		[]interface{}{"description", "description of the DLCMv2 environment", "string"},
-		[]interface{}{"google-credential", "ID of google cloud credentials to use for the DLCMv2 environment", "string"},
-		[]interface{}{"google-region", "GCP region to use for the DLCMv2 environment's resources", "string"},
-		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the DLCMv2 environment", "string"},
-		[]interface{}{"aws-region", "AWS region to use for the DLCMv2 environment's resources", "string"},
-		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the DLCMv2 environment", "string"},
-		[]interface{}{"azure-region", "Azure region to use for the DLCMv2 environment's resources", "string"},
+		[]interface{}{"google-credential", "ID of google cloud credentials to use for the DLCMv2 environment (only needed if google provider is used)", "string"},
+		[]interface{}{"google-region", "GCP region to use for the DLCMv2 environment's resources (only needed if google provider is used)", "string"},
+		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the DLCMv2 environment (only needed if aws provider is used)", "string"},
+		[]interface{}{"aws-region", "AWS region to use for the DLCMv2 environment's resources (only needed if aws provider is used)", "string"},
+		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the DLCMv2 environment (only needed if azure provider is used)", "string"},
+		[]interface{}{"azure-region", "Azure region to use for the DLCMv2 environment's resources (only needed if azure provider is used)", "string"},
 
 		[]interface{}{"size", "size of the DLCMv2 environment (S, M, L, XL)", "string"},
 		[]interface{}{"high-availability", "high availability DLCMv2 environment (true, false)", "string"},

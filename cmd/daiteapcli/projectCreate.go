@@ -43,7 +43,7 @@ func init() {
 
 	parameters := [][]interface{}{
 		[]interface{}{"name", "Name of the project.", "string"},
-		[]interface{}{"description", "Description of the project.", "string"},
+		[]interface{}{"description", "Description of the project. (optional)", "string"},
 	}
 
 	addParameterFlags(parameters, projectCreateCmd)
