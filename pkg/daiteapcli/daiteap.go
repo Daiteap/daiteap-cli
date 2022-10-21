@@ -142,7 +142,7 @@ func Logout() error {
 	return nil
 }
 
-func SendDaiteapRequest(method string, endpoint string, requestBody string, verbose string) (map[string]interface{}, error) {
+func SendDaiteapRequest(method string, endpoint string, requestBody string, verbose string, dryRun string) (map[string]interface{}, error) {
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
@@ -168,6 +168,16 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string, verb
 	request, err := http.NewRequest(method, URL, strings.NewReader(requestBody))
 	request.Header.Set("Authorization", token)
 	request.Header.Set("Content-type", "application/json")
+
+	if dryRun != "false" {
+		fmt.Println("Headers:")
+		headers, _ := json.Marshal(request.Header)
+		fmt.Println(string(headers))
+		fmt.Println("\nBody:")
+		fmt.Println(requestBody)
+
+		return emptyResponseBody, nil
+	}
 
 	resp, err = http.DefaultClient.Do(request)
 	if err == nil {

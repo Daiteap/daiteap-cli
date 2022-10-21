@@ -14,6 +14,7 @@ import (
 
 func CreateDLCMv2(cmd *cobra.Command) () {
     verbose, _ := cmd.Flags().GetString("verbose")
+    dryRun, _ := cmd.Flags().GetString("dry-run")
     templatePath, _ := cmd.Flags().GetString("dlcmv2-template")
 
     requestBody := ""
@@ -263,11 +264,11 @@ func CreateDLCMv2(cmd *cobra.Command) () {
 
     method := "POST"
     endpoint := "/createDlcmV2"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
     if err != nil {
         fmt.Println(err)
-    } else {
+    } else if dryRun == "false" {
         output, _ := json.MarshalIndent(responseBody, "", "    ")
         fmt.Println(string(output))
     }

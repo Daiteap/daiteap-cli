@@ -25,6 +25,7 @@ var environmenttemplateCreateCmd = &cobra.Command{
     },
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		environmenttemplatePath, _ := cmd.Flags().GetString("environmenttemplate")
 		method := "POST"
 		endpoint := "/environmenttemplates/create"
@@ -39,11 +40,11 @@ var environmenttemplateCreateCmd = &cobra.Command{
 		}
 		requestBody := string(content)
 
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}

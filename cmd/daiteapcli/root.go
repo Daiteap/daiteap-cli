@@ -37,7 +37,11 @@ func Execute() {
 func init() {
     rootCmd.PersistentFlags().StringP("output", "o", "", "Specify output format.")
 
-    var flag string
-    rootCmd.PersistentFlags().StringVarP(&flag, "verbose", "v", "false", "Verbose mode.")
+    var verboseFlag string
+    rootCmd.PersistentFlags().StringVarP(&verboseFlag, "verbose", "v", "false", "Verbose mode.")
     rootCmd.PersistentFlags().Lookup("verbose").NoOptDefVal = "true"
+
+    var dryRunFlag string
+    rootCmd.PersistentFlags().StringVarP(&dryRunFlag, "dry-run", "d", "false", "No execute mode.")
+    rootCmd.PersistentFlags().Lookup("dry-run").NoOptDefVal = "true"
 }

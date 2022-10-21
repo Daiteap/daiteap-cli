@@ -22,16 +22,17 @@ var projectCreateCmd = &cobra.Command{
     },
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
 		method := "POST"
 		endpoint := "/projects"
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
-		_, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
+		_, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			projectID, _ := GetProjectID(name)
 			fmt.Println("New project ID: " + projectID)
 		}

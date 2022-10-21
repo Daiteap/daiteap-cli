@@ -24,6 +24,7 @@ var computeRestartCmd = &cobra.Command{
     },
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		clusterID, _ := cmd.Flags().GetString("compute")
 		isCompute, err := IsCompute(clusterID)
 		if err != nil {
@@ -38,11 +39,11 @@ var computeRestartCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/restartCluster"
 		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}

@@ -23,6 +23,7 @@ var computeGetInstallStatusCmd = &cobra.Command{
     },
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		clusterID, _ := cmd.Flags().GetString("compute")
 		isCompute, err := IsCompute(clusterID)
 		if err != nil {
@@ -37,11 +38,11 @@ var computeGetInstallStatusCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/getInstallationStatus"
 		requestBody := "{\"ID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			installStep := responseBody["installStep"].(float64)
 
 			if installStep == 0 {

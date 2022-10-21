@@ -25,6 +25,7 @@ var cloudcredentialValidateCmd = &cobra.Command{
     },
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		cloudcredentialID, _ := cmd.Flags().GetString("cloudcredential")
 		method := "POST"
 		endpoint := "/validateCredentials"
@@ -36,32 +37,32 @@ var cloudcredentialValidateCmd = &cobra.Command{
 		}
 
 		requestBody := "{\"account_id\": " + cloudcredentialID + ", \"tenant_id\": \"" + workspace["id"] + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(0)
-		}
-
-		taskID := responseBody["taskId"]
-		endpoint = "/gettaskmessage"
-		requestBody = "{\"taskId\": \"" + taskID.(string) + "\"}"
-		
-		for i := 0; i < 20; i++ {
-			responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(0)
+		} else if dryRun != "false" {
+			taskID := responseBody["taskId"]
+			endpoint = "/gettaskmessage"
+			requestBody = "{\"taskId\": \"" + taskID.(string) + "\"}"
+			
+			for i := 0; i < 20; i++ {
+				responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, "false")
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(0)
+				}
+				if responseBody["status"] != "PENDING" {
+					output, _ := json.MarshalIndent(responseBody, "", "    ")
+					fmt.Println(string(output))
+					os.Exit(0)
+				}
+				time.Sleep(time.Second * 1)
 			}
-			if responseBody["status"] != "PENDING" {
-				output, _ := json.MarshalIndent(responseBody, "", "    ")
-				fmt.Println(string(output))
-				os.Exit(0)
-			}
-			time.Sleep(time.Second * 1)
-		}
 
-		fmt.Println("Error timeout waiting for validation")
-		os.Exit(0)
+			fmt.Println("Error timeout waiting for validation")
+			os.Exit(0)
+		}
 	},
 }
 

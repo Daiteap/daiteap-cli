@@ -18,14 +18,15 @@ var userListCmd = &cobra.Command{
 	Args:          cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		outputFormat, _ := cmd.Flags().GetString("output")
 		method := "GET"
 		endpoint := "/getuserslist"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			if outputFormat == "json" {
 				output, _ := json.MarshalIndent(responseBody, "", "    ")
 				fmt.Println(string(output))
