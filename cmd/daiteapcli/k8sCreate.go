@@ -73,7 +73,7 @@ func init() {
 	k8sCmd.AddCommand(k8sCreateCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"lcm", "type of kubernetes environment", "string"},
+		[]interface{}{"lcm", "type of kubernetes environment (dlcmv2)", "string"},
 		[]interface{}{"dlcmv2-template", "path to DLCMv2 template json file (optional)", "string"},
 
 		[]interface{}{"projectID", "project ID in which to add the DLCMv2 environment (only needed if projectName is not set)", "string"},
