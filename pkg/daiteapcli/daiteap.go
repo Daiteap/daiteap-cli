@@ -137,7 +137,11 @@ func Logout() error {
 		},
 	}
 
-	authUtils.Logout(&config)
+	err = authUtils.Logout(&config)
+	if err != nil {
+		err := fmt.Errorf("Error logging out.")
+		return err
+	}
 
 	return nil
 }

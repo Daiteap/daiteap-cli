@@ -193,7 +193,7 @@ func Logout (config *Config) error {
 		return err
 	}
 
-	request, err := BuildLogoutRequest(config.KeycloakConfig, authConfig.AccessToken)
+	request, err := BuildLogoutRequest(config.KeycloakConfig, authConfig.AccessToken, authConfig.RefreshToken)
 
 	if err != nil {
 		err := fmt.Errorf("Error building logout request")
@@ -202,31 +202,18 @@ func Logout (config *Config) error {
 
 	var resp *http.Response
 	var body []byte
-	resp, _ = http.DefaultClient.Do(request)
+	resp, _ = http.DefaultClient.Do(request)	
 	body, _ = ioutil.ReadAll(io.LimitReader(resp.Body, 1<<20))
 	defer resp.Body.Close()
-	if resp.StatusCode == 200 {
-		content, _, _ := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-		switch content {
-		case "application/json":
-			var f interface{}
-			json.Unmarshal(body, &f)
-			m := f.(map[string]interface{})
-
-			authConfig.AccessToken = m["access_token"].(string)
-
-			err := SaveConfig(&authConfig)
-			if err != nil {
-				return err
-			}
-		default:
-			err := fmt.Errorf("invalid Content type")
+	if resp.StatusCode >= 200 && resp.StatusCode <= 300 {
+		authConfig.AccessToken = ""
+		err := SaveConfig(&authConfig)
+		if err != nil {
 			return err
 		}
-	} else {
-		err := fmt.Errorf("invalid Status code (%v), (%v)", resp.StatusCode, string(body))
-		return err
-	}
 
-	return nil
+		return nil
+	}
+	err = fmt.Errorf("invalid Status code (%v), (%v)", resp.StatusCode, string(body))
+	return err
 }

@@ -50,14 +50,16 @@ func BuildRefreshRequest(keycloakConfig KeycloakConfig, refreshToken string) (*h
 	return req, err
 }
 
-func BuildLogoutRequest(keycloakConfig KeycloakConfig, accessToken string) (*http.Request, error) {
+func BuildLogoutRequest(keycloakConfig KeycloakConfig, accessToken string, refreshToken string) (*http.Request, error) {
 	logoutURL := fmt.Sprintf(
-		"%v/realms/%v/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fstg.daiteap.com%2F%23%2Fapp%2Fplatform%2Foverview&id_token_hint=" + accessToken,
+		"%v/realms/%v/protocol/openid-connect/logout",
 		keycloakConfig.KeycloakURL,
 		keycloakConfig.Realm,
 	)
 
 	form := url.Values{}
+	form.Add("client_id", keycloakConfig.ClientID)
+	form.Add("refresh_token", refreshToken)
 
 	req, err := http.NewRequest("POST", logoutURL, strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
