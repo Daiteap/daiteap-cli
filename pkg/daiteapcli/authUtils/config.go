@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type IConfig struct {
@@ -49,6 +50,14 @@ func SaveConfig(cfg *IConfig) error {
 	data, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {
 		return fmt.Errorf("%v: %w", "unable to marshal config", err)
+	}
+
+	cfgParentDir := strings.Split(cfgDir, "/daiteap")[0]
+	if _, err = os.Stat(cfgParentDir); os.IsNotExist(err) {
+		err = os.Mkdir(cfgParentDir, 0o700)
+		if err != nil {
+			return err
+		}
 	}
 
 	if _, err = os.Stat(cfgDir); os.IsNotExist(err) {
