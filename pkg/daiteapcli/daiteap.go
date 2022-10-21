@@ -170,7 +170,11 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string, verb
 	request.Header.Set("Content-type", "application/json")
 
 	if dryRun != "false" {
-		fmt.Println("Headers:")
+		fmt.Println("URL:")
+		fmt.Println(URL)
+		fmt.Println("\nMethod:")
+		fmt.Println(method)
+		fmt.Println("\nHeaders:")
 		headers, _ := json.Marshal(request.Header)
 		fmt.Println(string(headers))
 		fmt.Println("\nBody:")
