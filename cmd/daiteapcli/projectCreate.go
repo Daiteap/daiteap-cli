@@ -15,22 +15,24 @@ var projectCreateCmd = &cobra.Command{
 	Short:         "Command to create project at current tenant",
 	Args:          cobra.ExactArgs(0),
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		requiredFlags := []string{"name", "description"}
+		requiredFlags := []string{"name"}
 		checkForRequiredFlags(requiredFlags, cmd)
 
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		name, _ := cmd.Flags().GetString("name")
 		description, _ := cmd.Flags().GetString("description")
 		method := "POST"
 		endpoint := "/projects"
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
-		_, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		_, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			projectID, _ := GetProjectID(name)
 			fmt.Println("New project ID: " + projectID)
 		}
@@ -42,7 +44,7 @@ func init() {
 
 	parameters := [][]interface{}{
 		[]interface{}{"name", "Name of the project.", "string"},
-		[]interface{}{"description", "Description of the project.", "string"},
+		[]interface{}{"description", "Description of the project. (optional)", "string"},
 	}
 
 	addParameterFlags(parameters, projectCreateCmd)

@@ -32,7 +32,7 @@ func ValidateCredentials(provider string, credentials map[string]interface{}) (b
         requestBody = "{\"credentials\": {\"azure\": {\"azure_tenant_id\": \"" + tenantID + "\", \"azure_subscription_id\": \"" + subscriptionID + "\", \"azure_client_id\": \"" + clientID + "\", \"azure_client_secret\": \"" + clientSecret + "\"}}, \"tenant_id\": \"" + workspace["id"] + "\"}"
     }
     
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "false", "false")
     if err != nil {
         return false, err
     }
@@ -42,7 +42,7 @@ func ValidateCredentials(provider string, credentials map[string]interface{}) (b
     requestBody = "{\"taskId\": \"" + taskID.(string) + "\"}"
     
     for i := 0; i < 20; i++ {
-        responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+        responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "false", "false")
         if err != nil {
             return false, err
         }

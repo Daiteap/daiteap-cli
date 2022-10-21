@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type IConfig struct {
@@ -51,6 +52,14 @@ func SaveConfig(cfg *IConfig) error {
 		return fmt.Errorf("%v: %w", "unable to marshal config", err)
 	}
 
+	cfgParentDir := strings.Split(cfgDir, "/daiteap")[0]
+	if _, err = os.Stat(cfgParentDir); os.IsNotExist(err) {
+		err = os.Mkdir(cfgParentDir, 0o700)
+		if err != nil {
+			return err
+		}
+	}
+
 	if _, err = os.Stat(cfgDir); os.IsNotExist(err) {
 		err = os.Mkdir(cfgDir, 0o700)
 		if err != nil {
@@ -75,7 +84,21 @@ func GetConfig() (IConfig, error) {
 
 	content, err := ioutil.ReadFile(file)
 	if err != nil {
-		return IConfig{}, fmt.Errorf("%v: %w", "unable to read config", err)
+		var cfg IConfig = IConfig{
+			AccessToken:  "",
+			RefreshToken: "",
+			ServerURL:    "https://app.daiteap.com",
+		}
+
+		err := SaveConfig(&cfg)
+		if err != nil {
+			err := fmt.Errorf("Error saving configuration.")
+			return IConfig{}, err
+		}
+		content, err = ioutil.ReadFile(file)
+		if err != nil {
+			return IConfig{}, fmt.Errorf("%v: %w", "unable to read config", err)
+		}
 	}
 
 	var f interface{}

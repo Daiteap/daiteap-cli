@@ -22,16 +22,18 @@ var environmenttemplateSaveCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		name, _ := cmd.Flags().GetString("name")
 		environmentID, _ := cmd.Flags().GetString("environment")
 		method := "POST"
 		endpoint := "/environmenttemplates/save"
 		requestBody := "{\"name\": \"" + name + "\", \"environmentId\": \"" + environmentID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}

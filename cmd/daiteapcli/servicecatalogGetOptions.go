@@ -22,15 +22,17 @@ var servicecatalogGetOptionsCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		service, _ := cmd.Flags().GetString("service")
 		method := "POST"
 		endpoint := "/getServiceOptions"
 		requestBody := "{\"service\": \"" + service + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}

@@ -114,7 +114,39 @@ func Login() error {
 	return nil
 }
 
-func SendDaiteapRequest(method string, endpoint string, requestBody string) (map[string]interface{}, error) {
+func Logout() error {
+	authConfig, err := authUtils.GetConfig()
+	if err != nil {
+		err := fmt.Errorf("Error reading config. Please update it.")
+		return err
+	}
+	if !(len(authConfig.ServerURL) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return err
+	}
+
+	config := authUtils.Config{
+		KeycloakConfig: authUtils.KeycloakConfig{
+			KeycloakURL: authConfig.ServerURL + "/auth",
+			Realm:       "Daiteap",
+			ClientID:    "daiteap-cli",
+		},
+		EmbeddedServerConfig: authUtils.EmbeddedServerConfig{
+			Port:         3000,
+			CallbackPath: "sso-callback",
+		},
+	}
+
+	err = authUtils.Logout(&config)
+	if err != nil {
+		err := fmt.Errorf("Error logging out.")
+		return err
+	}
+
+	return nil
+}
+
+func SendDaiteapRequest(method string, endpoint string, requestBody string, verbose string, dryRun string) (map[string]interface{}, error) {
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
@@ -141,9 +173,26 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string) (map
 	request.Header.Set("Authorization", token)
 	request.Header.Set("Content-type", "application/json")
 
+	if dryRun != "false" {
+		fmt.Println("URL:")
+		fmt.Println(URL)
+		fmt.Println("\nMethod:")
+		fmt.Println(method)
+		fmt.Println("\nHeaders:")
+		headers, _ := json.Marshal(request.Header)
+		fmt.Println(string(headers))
+		fmt.Println("\nBody:")
+		fmt.Println(requestBody)
+
+		return emptyResponseBody, nil
+	}
+
 	resp, err = http.DefaultClient.Do(request)
 	if err == nil {
 		responseBody, err = ioutil.ReadAll(io.LimitReader(resp.Body, 1<<20))
+		if verbose != "false" {
+			fmt.Println(string(responseBody) + "\n\n")
+		}
 		defer resp.Body.Close()
 		if resp.StatusCode >= 200 && resp.StatusCode <= 300 {
 			var f interface{}

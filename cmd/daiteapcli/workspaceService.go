@@ -7,7 +7,7 @@ import (
 func GetCurrentWorkspace() (map[string]string, error) {
     method := "GET"
     endpoint := "/account/tenant"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", "false")
 
     workspace := make(map[string]string)
 

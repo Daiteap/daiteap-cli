@@ -58,6 +58,8 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 		return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		templatePath, _ := cmd.Flags().GetString("compute-template")
 
 		requestBody := ""
@@ -222,11 +224,11 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 		
 		method := "POST"
 		endpoint := "/createComputeVMs"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}
@@ -237,36 +239,36 @@ func init() {
 	computeCmd.AddCommand(computeCreateComputeVMsCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"compute-template", "path to compute template json file", "string"},
+		[]interface{}{"compute-template", "path to compute template json file (optional)", "string"},
 
 		[]interface{}{"projectID", "project ID in which to add the Compute (VMs) environment (only needed if projectName is not set)", "string"},
 		[]interface{}{"projectName", "project name in which to add the Compute (VMs) environment (only needed if projectID is not set)", "string"},
 		[]interface{}{"name", "name of the Compute (VMs) environment", "string"},
 
-		[]interface{}{"google-credential", "ID of google cloud credentials to use for the Compute (VMs) environment", "string"},
-		[]interface{}{"google-region", "GCP region to use for the Compute (VMs) environment's resources", "string"},
-		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the Compute (VMs) environment", "string"},
-		[]interface{}{"aws-region", "AWS region to use for the Compute (VMs) environment's resources", "string"},
-		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the Compute (VMs) environment", "string"},
-		[]interface{}{"azure-region", "Azure region to use for the Compute (VMs) environment's resources", "string"},
+		[]interface{}{"google-credential", "ID of google cloud credentials to use for the Compute (VMs) environment (only needed if google provider is used)", "string"},
+		[]interface{}{"google-region", "GCP region to use for the Compute (VMs) environment's resources (only needed if google provider is used)", "string"},
+		[]interface{}{"aws-credential", "ID of AWS cloud credentials to use for the Compute (VMs) environment (only needed if aws provider is used)", "string"},
+		[]interface{}{"aws-region", "AWS region to use for the Compute (VMs) environment's resources (only needed if aws provider is used)", "string"},
+		[]interface{}{"azure-credential", "ID of Azure cloud credentials to use for the Compute (VMs) environment (only needed if azure provider is used)", "string"},
+		[]interface{}{"azure-region", "Azure region to use for the Compute (VMs) environment's resources (only needed if azure provider is used)", "string"},
 
-		[]interface{}{"google-vpc-cidr", "google VPC CIDR of the Compute (VMs) environment", "string"},
-		[]interface{}{"google-machine-count", "google machine count od the Compute (VMs) environment", "string"},
-		[]interface{}{"google-zone", "google cloud zone for the Compute (VMs) environment", "string"},
-		[]interface{}{"google-instance-type", "google instance type for the Compute (VMs) environment (S, M, L, XL)", "string"},
-		[]interface{}{"google-operating-system", "google operating-system for the Compute (VMs) environment", "string"},
+		[]interface{}{"google-vpc-cidr", "google VPC CIDR of the Compute (VMs) environment (only needed if google provider is used)", "string"},
+		[]interface{}{"google-machine-count", "google machine count od the Compute (VMs) environment (only needed if google provider is used)", "string"},
+		[]interface{}{"google-zone", "google cloud zone for the Compute (VMs) environment (only needed if google provider is used)", "string"},
+		[]interface{}{"google-instance-type", "google instance type for the Compute (VMs) environment (S, M, L, XL) (only needed if google provider is used)", "string"},
+		[]interface{}{"google-operating-system", "google operating-system for the Compute (VMs) environment (only needed if google provider is used)", "string"},
 
-		[]interface{}{"aws-vpc-cidr", "aws VPC CIDR of the Compute (VMs) environment", "string"},
-		[]interface{}{"aws-machine-count", "aws machine count od the Compute (VMs) environment", "string"},
-		[]interface{}{"aws-zone", "aws cloud zone for the Compute (VMs) environment", "string"},
-		[]interface{}{"aws-instance-type", "aws instance type for the Compute (VMs) environment (S, M, L, XL)", "string"},
-		[]interface{}{"aws-operating-system", "aws operating-system for the Compute (VMs) environment", "string"},
+		[]interface{}{"aws-vpc-cidr", "aws VPC CIDR of the Compute (VMs) environment (only needed if aws provider is used)", "string"},
+		[]interface{}{"aws-machine-count", "aws machine count od the Compute (VMs) environment (only needed if aws provider is used)", "string"},
+		[]interface{}{"aws-zone", "aws cloud zone for the Compute (VMs) environment (only needed if aws provider is used)", "string"},
+		[]interface{}{"aws-instance-type", "aws instance type for the Compute (VMs) environment (S, M, L, XL) (only needed if aws provider is used)", "string"},
+		[]interface{}{"aws-operating-system", "aws operating-system for the Compute (VMs) environment (only needed if aws provider is used)", "string"},
 
-		[]interface{}{"azure-vpc-cidr", "azure VPC CIDR of the Compute (VMs) environment", "string"},
-		[]interface{}{"azure-machine-count", "azure machine count od the Compute (VMs) environment", "string"},
-		[]interface{}{"azure-zone", "azure cloud zone for the Compute (VMs) environment", "string"},
-		[]interface{}{"azure-instance-type", "azure instance type for the Compute (VMs) environment (S, M, L, XL)", "string"},
-		[]interface{}{"azure-operating-system", "azure operating-system for the Compute (VMs) environment", "string"},
+		[]interface{}{"azure-vpc-cidr", "azure VPC CIDR of the Compute (VMs) environment (only needed if azure provider is used)", "string"},
+		[]interface{}{"azure-machine-count", "azure machine count od the Compute (VMs) environment (only needed if azure provider is used)", "string"},
+		[]interface{}{"azure-zone", "azure cloud zone for the Compute (VMs) environment (only needed if azure provider is used)", "string"},
+		[]interface{}{"azure-instance-type", "azure instance type for the Compute (VMs) environment (S, M, L, XL) (only needed if azure provider is used)", "string"},
+		[]interface{}{"azure-operating-system", "azure operating-system for the Compute (VMs) environment (only needed if azure provider is used)", "string"},
 	}
 
 	addParameterFlags(parameters, computeCreateComputeVMsCmd)

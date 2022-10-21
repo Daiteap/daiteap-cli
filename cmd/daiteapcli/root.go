@@ -7,7 +7,7 @@ import (
     "github.com/spf13/cobra"
 )
 
-var version = "0.1.3"
+var version = "0.1.4"
 
 var rootCmd = &cobra.Command{
     Use:  "daiteapcli",
@@ -35,5 +35,13 @@ func Execute() {
 }
 
 func init() {
-    rootCmd.PersistentFlags().String("output", "", "Specify output format.")
+    rootCmd.PersistentFlags().StringP("output", "o", "", "Specify output format.")
+
+    var verboseFlag string
+    rootCmd.PersistentFlags().StringVarP(&verboseFlag, "verbose", "v", "false", "Verbose mode.")
+    rootCmd.PersistentFlags().Lookup("verbose").NoOptDefVal = "true"
+
+    var dryRunFlag string
+    rootCmd.PersistentFlags().StringVarP(&dryRunFlag, "dry-run", "d", "false", "No execute mode.")
+    rootCmd.PersistentFlags().Lookup("dry-run").NoOptDefVal = "true"
 }

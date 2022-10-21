@@ -22,6 +22,8 @@ var cloudcredentialUpdateCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		id, _ := cmd.Flags().GetString("id")
 		provider, _ := cmd.Flags().GetString("provider")
 		label, _ := cmd.Flags().GetString("label")
@@ -36,11 +38,11 @@ var cloudcredentialUpdateCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/cloud-credentials/" + id
 		requestBody := "{\"provider\": \"" + provider + "\", \"label\": \"" + label + "\", \"description\": \"" + description + "\", \"sharedCredentials\": " + shared + "}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}

@@ -9,7 +9,7 @@ import (
 func GetProjectID(name string) (string, error) {
     method := "GET"
     endpoint := "/projects"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "")
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", "false")
 
     if err != nil {
         return "", err

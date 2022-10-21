@@ -44,6 +44,8 @@ var storageCreateCmd = &cobra.Command{
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetString("verbose")
+		dryRun, _ := cmd.Flags().GetString("dry-run")
 		provider, _ := cmd.Flags().GetString("provider")
 		credentialID, _ := cmd.Flags().GetString("credential")
 		name, _ := cmd.Flags().GetString("name")
@@ -70,11 +72,11 @@ var storageCreateCmd = &cobra.Command{
 			requestBody = "{\"provider\": \"" + provider + "\", \"credential\": \"" + credentialID + "\", \"project\": \"" + projectID + "\", \"name\": \"" + name + "\", \"storage_account_url\": \"" + storageAccount + "\"}"
 		}
 
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
+		} else if dryRun == "false" {
 			output, _ := json.MarshalIndent(responseBody, "", "    ")
 			fmt.Println(string(output))
 		}
@@ -87,8 +89,8 @@ func init() {
 	parameters := [][]interface{}{
 		[]interface{}{"provider", "cloud provider in which the bucket is to be created (google, aws, azure)", "string"},
 		[]interface{}{"credential", "ID of the credentials to use", "string"},
-		[]interface{}{"projectID", "ID of the project", "string"},
-		[]interface{}{"projectName", "ID of the project", "string"},
+		[]interface{}{"projectID", "ID of the project (only needed if projectName is not set)", "string"},
+		[]interface{}{"projectName", "ID of the project (only needed if projectID is not set)", "string"},
 		[]interface{}{"name", "name of the bucket", "string"},
 		[]interface{}{"google-storage-class", "storage class of the bucket (only needed if provider is google)", "string"},
 		[]interface{}{"google-bucket-location", "location of the bucket (only needed if provider is google)", "string"},
