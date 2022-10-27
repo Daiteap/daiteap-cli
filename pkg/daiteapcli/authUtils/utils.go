@@ -89,6 +89,7 @@ func StartServer(config Config) {
 								AccessToken:  m["access_token"].(string),
 								RefreshToken: m["refresh_token"].(string),
 								ServerURL:    authConfig.ServerURL,
+								SingleUser:   authConfig.SingleUser,
 							}
 
 							SaveConfig(cfg)

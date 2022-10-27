@@ -13,6 +13,7 @@ type IConfig struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 	ServerURL string `json:"server_url"`
+	SingleUser string `json:"single_user"`
 }
 
 func getConfigLocation() (string, error) {
@@ -88,6 +89,7 @@ func GetConfig() (IConfig, error) {
 			AccessToken:  "",
 			RefreshToken: "",
 			ServerURL:    "https://app.daiteap.com",
+			SingleUser:    "false",
 		}
 
 		err := SaveConfig(&cfg)
@@ -114,10 +116,14 @@ func GetConfig() (IConfig, error) {
 	if _, ok := m["server_url"]; !ok {
 		return IConfig{}, fmt.Errorf("%v: %w", "unable to read config", err)
 	}
+	if _, ok := m["single_user"]; !ok {
+		return IConfig{}, fmt.Errorf("%v: %w", "unable to read config", err)
+	}
 	var cfg IConfig = IConfig{
 		AccessToken:  m["access_token"].(string),
 		RefreshToken: m["refresh_token"].(string),
 		ServerURL:    m["server_url"].(string),
+		SingleUser:   m["single_user"].(string),
 	}
 
 	return cfg, nil

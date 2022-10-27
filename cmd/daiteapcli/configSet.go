@@ -18,12 +18,24 @@ var configSetCmd = &cobra.Command{
 		requiredFlags := []string{"url"}
 		checkForRequiredFlags(requiredFlags, cmd)
 
+		singleUser, _ := cmd.Flags().GetString("single-user")
+		if len(singleUser) != 0 {
+			if singleUser != "false" && singleUser != "true" {
+				fmt.Println("Invalid single-user parameter")
+				printHelpAndExit(cmd)
+			}
+		}
+
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		serverURL, _ := cmd.Flags().GetString("url")
+		singleUser, _ := cmd.Flags().GetString("single-user")
+		if len(singleUser) == 0 {
+			singleUser = "false"
+		}
 
-		err := daiteapcli.UpdateConfig(serverURL)
+		err := daiteapcli.UpdateConfig(serverURL, singleUser)
 
 		if err != nil {
 			fmt.Println(err)
@@ -38,6 +50,7 @@ func init() {
 
 	parameters := [][]interface{}{
 		[]interface{}{"url", "URL of the new server. Example - https://app.daiteap.com", "string"},
+		[]interface{}{"single-user", "flag for single user mode (true, false). Default - false (optional)", "string"},
 	}
 
 	addParameterFlags(parameters, configSetCmd)

@@ -19,8 +19,6 @@ var loginCmd = &cobra.Command{
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
-			fmt.Println("Successfully Logged In.")
 		}
 	},
 }
