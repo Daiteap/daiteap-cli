@@ -7,6 +7,7 @@ import (
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/rodaine/table"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -33,6 +34,9 @@ var environmenttemplateListCmd = &cobra.Command{
 				fmt.Println(string(output))
 			} else if outputFormat == "wide" {
 				tbl := table.New("ID", "Name", "Description", "Providers", "Type", "Created at", "Created by")
+				headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgYellow).SprintfFunc()
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 				for _, template := range responseBody["environmentTemplates"].([]interface{}) {
 					templateObject := template.(map[string]interface{})
@@ -68,6 +72,9 @@ var environmenttemplateListCmd = &cobra.Command{
 				tbl.Print()
 			} else {
 				tbl := table.New("Name", "Description", "Providers", "Type", "Created at", "Created by")
+				headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgYellow).SprintfFunc()
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 				for _, template := range responseBody["environmentTemplates"].([]interface{}) {
 					templateObject := template.(map[string]interface{})
