@@ -89,6 +89,11 @@ func Login() error {
 		return err
 	}
 
+	if authConfig.SingleUser == "true"{
+		fmt.Println("Single user mode: No login required.")
+		return nil
+	}
+
 	authUtils.CloseApp.Add(1)
 	config := authUtils.Config{
 		KeycloakConfig: authUtils.KeycloakConfig{
@@ -111,6 +116,7 @@ func Login() error {
 
 	authUtils.CloseApp.Wait()
 
+	fmt.Println("Successfully Logged In.")
 	return nil
 }
 
@@ -123,6 +129,11 @@ func Logout() error {
 	if !(len(authConfig.ServerURL) > 0) {
 		err := fmt.Errorf("Error reading configuration. Please update it.")
 		return err
+	}
+
+	if authConfig.SingleUser == "true"{
+		fmt.Println("Single user mode: No login required.")
+		return nil
 	}
 
 	config := authUtils.Config{
@@ -143,6 +154,7 @@ func Logout() error {
 		return err
 	}
 
+	fmt.Println("Successfully Logged Out.")
 	return nil
 }
 
@@ -164,14 +176,15 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string, verb
 	daiteapServerURL := authConfig.ServerURL + "/server"
 	URL := fmt.Sprintf("%v"+endpoint, daiteapServerURL)
 
-	token, err := GetActiveToken()
-	if err != nil {
-		return emptyResponseBody, err
-	}
-
 	request, err := http.NewRequest(method, URL, strings.NewReader(requestBody))
-	request.Header.Set("Authorization", token)
-	request.Header.Set("Content-type", "application/json")
+	if authConfig.SingleUser == "false"{
+		token, err := GetActiveToken()
+		if err != nil {
+			return emptyResponseBody, err
+		}
+		request.Header.Set("Authorization", token)
+		request.Header.Set("Content-type", "application/json")	
+	}
 
 	if dryRun != "false" {
 		fmt.Println("URL:")
@@ -297,11 +310,12 @@ func GetUsername() (string, error) {
 	return username, nil
 }
 
-func UpdateConfig(serverURL string) (error) {
+func UpdateConfig(serverURL string, singleUser string) (error) {
 	var cfg *authUtils.IConfig = &authUtils.IConfig{
 		AccessToken:  "",
 		RefreshToken: "",
 		ServerURL:    serverURL,
+		SingleUser:   singleUser,
 	}
 
 	err := authUtils.SaveConfig(cfg)
@@ -324,8 +338,13 @@ func GetConfig() (map[string]interface{}, error) {
 		err := fmt.Errorf("Error reading configuration. Please update it.")
 		return config, err
 	}
+	if !(len(authConfig.SingleUser) > 0) {
+		err := fmt.Errorf("Error reading configuration. Please update it.")
+		return config, err
+	}
 
 	config["Server URL"] = authConfig.ServerURL
+	config["Single user mode"] = authConfig.SingleUser
 
 	return config, nil
 }

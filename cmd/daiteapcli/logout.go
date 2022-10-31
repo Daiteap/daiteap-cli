@@ -19,8 +19,6 @@ var logoutCmd = &cobra.Command{
 
 		if err != nil {
 			fmt.Println(err)
-		} else {
-			fmt.Println("Successfully Logged Out.")
 		}
 	},
 }

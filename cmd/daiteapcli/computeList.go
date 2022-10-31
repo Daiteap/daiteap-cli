@@ -7,6 +7,7 @@ import (
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/rodaine/table"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -44,6 +45,9 @@ var computeListCmd = &cobra.Command{
 				fmt.Println(string(output))
 			} else if outputFormat == "wide" {
 				tbl := table.New("ID", "Name", "Project", "Provider", "Created at", "Created by", "Status")
+				headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgYellow).SprintfFunc()
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 	
 				for _, cluster := range clusterArray["data"] {
 					clusterObject := cluster.(map[string]interface{})
@@ -97,6 +101,9 @@ var computeListCmd = &cobra.Command{
 				tbl.Print()
 			} else {
 				tbl := table.New("Name", "Project", "Provider", "Created at", "Created by", "Status")
+				headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgYellow).SprintfFunc()
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 	
 				for _, cluster := range clusterArray["data"] {
 					clusterObject := cluster.(map[string]interface{})

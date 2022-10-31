@@ -6,6 +6,7 @@ import (
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/rodaine/table"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +33,9 @@ var storageListCmd = &cobra.Command{
 				fmt.Println(string(output))
 			} else if outputFormat == "wide" {
 				tbl := table.New("ID", "Name", "Cloud", "Project", "Credential", "Created At")
+				headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgYellow).SprintfFunc()
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 				for _, bucket := range responseBody["data"].([]interface{}) {
 					bucketObject := bucket.(map[string]interface{})
@@ -42,6 +46,9 @@ var storageListCmd = &cobra.Command{
 				tbl.Print()
 			} else {
 				tbl := table.New("Name", "Cloud", "Project", "Credential", "Created At")
+				headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgYellow).SprintfFunc()
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 				for _, bucket := range responseBody["data"].([]interface{}) {
 					bucketObject := bucket.(map[string]interface{})

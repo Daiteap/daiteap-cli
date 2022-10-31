@@ -6,6 +6,7 @@ import (
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/rodaine/table"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +33,9 @@ var projectListCmd = &cobra.Command{
 				fmt.Println(string(output))
 			} else if outputFormat == "wide" {
 				tbl := table.New("ID", "Name", "Description", "Created at", "Created by")
+				headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgYellow).SprintfFunc()
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 				for _, project := range responseBody["data"].([]interface{}) {
 					projectObject := project.(map[string]interface{})
@@ -41,6 +45,9 @@ var projectListCmd = &cobra.Command{
 				tbl.Print()
 			} else {
 				tbl := table.New("Name", "Description", "Created at", "Created by")
+				headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgYellow).SprintfFunc()
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 				for _, project := range responseBody["data"].([]interface{}) {
 					projectObject := project.(map[string]interface{})
