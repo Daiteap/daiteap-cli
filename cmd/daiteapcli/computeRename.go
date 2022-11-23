@@ -37,10 +37,10 @@ var computeRenameCmd = &cobra.Command{
 		}
 
 		name, _ := cmd.Flags().GetString("name")
-		method := "POST"
-		endpoint := "/renameCluster"
-		requestBody := "{\"clusterID\": \"" + clusterID + "\", \"clusterName\": \"" + name + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "PUT"
+		endpoint := "/clusters/" + clusterID
+		requestBody := "{\"description\": \"" + "" + "\", \"name\": \"" + name + "\"}"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

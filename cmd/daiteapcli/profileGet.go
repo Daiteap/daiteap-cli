@@ -19,8 +19,8 @@ var profileGetCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		method := "GET"
-		endpoint := "/profile"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		endpoint := "/user/profile"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

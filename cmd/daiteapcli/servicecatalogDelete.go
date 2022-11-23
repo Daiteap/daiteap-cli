@@ -27,10 +27,9 @@ var servicecatalogDeleteCmd = &cobra.Command{
 		name, _ := cmd.Flags().GetString("name")
 		namespace, _ := cmd.Flags().GetString("namespace")
 		clusterID, _ := cmd.Flags().GetString("cluster")
-		method := "POST"
-		endpoint := "/deleteService"
-		requestBody := "{\"name\": \"" + name + "\", \"namespace\": \"" + namespace + "\", \"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "DELETE"
+		endpoint := "/clusters/" + clusterID + "/services/" + name + "/" + namespace
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

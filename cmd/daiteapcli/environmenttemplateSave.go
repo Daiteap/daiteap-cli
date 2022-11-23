@@ -27,9 +27,9 @@ var environmenttemplateSaveCmd = &cobra.Command{
 		name, _ := cmd.Flags().GetString("name")
 		environmentID, _ := cmd.Flags().GetString("environment")
 		method := "POST"
-		endpoint := "/environmenttemplates/save"
-		requestBody := "{\"name\": \"" + name + "\", \"environmentId\": \"" + environmentID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		endpoint := "/clusters/" + environmentID + "/template"
+		requestBody := "{\"name\": \"" + name + "\"}"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

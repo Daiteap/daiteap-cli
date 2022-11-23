@@ -33,9 +33,9 @@ var userAddCmd = &cobra.Command{
 		sshpubkey, _ := cmd.Flags().GetString("sshpubkey")
 		userRole, _ := cmd.Flags().GetString("user-role")
 		method := "POST"
-		endpoint := "/addnewuser"
+		endpoint := "/users"
 		requestBody := "{\"username\": \"" + username + "\", \"firstname\": \"" + firstname + "\", \"lastname\": \"" + lastname + "\", \"email\": \"" + email + "\", \"company\": \"" + company + "\", \"phone\": \"" + phone + "\", \"sshpubkey\": \"" + sshpubkey + "\", \"userRole\": \"" + userRole + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

@@ -36,10 +36,9 @@ var k8sGetConfigCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		method := "POST"
-		endpoint := "/getClusterConfig"
-		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "GET"
+		endpoint := "/clusters/" + clusterID + "/config"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

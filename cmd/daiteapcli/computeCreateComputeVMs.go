@@ -223,8 +223,8 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 		}
 		
 		method := "POST"
-		endpoint := "/createComputeVMs"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		endpoint := "/clusters/compute-create"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

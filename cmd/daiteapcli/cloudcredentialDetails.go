@@ -27,7 +27,7 @@ var cloudcredentialDetailsCmd = &cobra.Command{
 		cloudcredentialID, _ := cmd.Flags().GetString("cloudcredential")
 		method := "GET"
 		endpoint := "/cloud-credentials/" + cloudcredentialID
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

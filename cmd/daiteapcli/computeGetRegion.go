@@ -16,27 +16,19 @@ var computeGetRegionCmd = &cobra.Command{
 	Short:         "Command to get valid region for Compute (VMs)",
 	Args:          cobra.ExactArgs(0),
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		requiredFlags := []string{"provider", "cloud-credential"}
+		requiredFlags := []string{"cloud-credential"}
 		checkForRequiredFlags(requiredFlags, cmd)
-
-		provider, _ := cmd.Flags().GetString("provider")
-		if provider != "google" && provider != "aws" && provider != "azure" {
-			fmt.Println("Invalid provider parameter. Valid parameter values are \"google\", \"aws\" and \"azure\"")
-			printHelpAndExit(cmd)
-		}
 
         return nil
     },
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
-		provider, _ := cmd.Flags().GetString("provider")
 		cloudCredential, _ := cmd.Flags().GetString("cloud-credential")
 
-		method := "POST"
-		endpoint := "/getValidRegions"
-		requestBody := "{\"provider\": \"" + provider + "\", \"accountId\": " + cloudCredential + "}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "GET"
+		endpoint := "/cloud-credentials/" + cloudCredential + "/regions"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
@@ -51,7 +43,6 @@ func init() {
 	computeCmd.AddCommand(computeGetRegionCmd)
 
 	parameters := [][]interface{}{
-		[]interface{}{"provider", "cloud provider (google, aws, azure)", "string"},
 		[]interface{}{"cloud-credential", "ID of cloud credential", "string"},
 	}
 

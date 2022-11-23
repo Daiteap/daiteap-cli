@@ -23,7 +23,7 @@ var projectListCmd = &cobra.Command{
 		outputFormat, _ := cmd.Flags().GetString("output")
 		method := "GET"
 		endpoint := "/projects"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

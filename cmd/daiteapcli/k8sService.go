@@ -265,8 +265,8 @@ func CreateDLCMv2(cmd *cobra.Command) () {
     }
 
     method := "POST"
-    endpoint := "/createDlcmV2"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+    endpoint := "/clusters/dlcmv2-create"
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
     if err != nil {
         fmt.Println(err)
@@ -280,9 +280,9 @@ func K8sList(cmd *cobra.Command) () {
     verbose, _ := cmd.Flags().GetString("verbose")
     dryRun, _ := cmd.Flags().GetString("dry-run")
     outputFormat, _ := cmd.Flags().GetString("output")
-    method := "POST"
-    endpoint := "/getClusterList"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+    method := "GET"
+	endpoint := "/clusters"
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
     if err != nil {
         fmt.Println(err)

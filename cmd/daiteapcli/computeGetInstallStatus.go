@@ -35,10 +35,9 @@ var computeGetInstallStatusCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		method := "POST"
-		endpoint := "/getInstallationStatus"
-		requestBody := "{\"ID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "GET"
+		endpoint := "/clusters/" + clusterID + "/installation-status"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

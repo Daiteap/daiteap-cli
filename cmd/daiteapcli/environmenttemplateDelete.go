@@ -25,10 +25,9 @@ var environmenttemplateDeleteCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		environmenttemplateID, _ := cmd.Flags().GetString("environmenttemplate")
-		method := "POST"
-		endpoint := "/environmenttemplates/delete"
-		requestBody := "{\"environmentTemplateId\": \"" + environmenttemplateID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "DELETE"
+		endpoint := "/environment-templates/" + environmenttemplateID
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

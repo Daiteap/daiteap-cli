@@ -72,7 +72,7 @@ var storageCreateCmd = &cobra.Command{
 			requestBody = "{\"provider\": \"" + provider + "\", \"credential\": \"" + credentialID + "\", \"project\": \"" + projectID + "\", \"name\": \"" + name + "\", \"storage_account_url\": \"" + storageAccount + "\"}"
 		}
 
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

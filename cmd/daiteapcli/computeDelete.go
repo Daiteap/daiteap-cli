@@ -36,10 +36,9 @@ var computeDeleteCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		method := "POST"
-		endpoint := "/deleteCluster"
-		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "DELETE"
+		endpoint := "/clusters/" + clusterID + "/delete"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

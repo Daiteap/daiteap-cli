@@ -26,8 +26,8 @@ var environmenttemplateDetailsCmd = &cobra.Command{
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		environmenttemplateID, _ := cmd.Flags().GetString("environmenttemplate")
 		method := "GET"
-		endpoint := "/environmenttemplates/get/" + environmenttemplateID
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		endpoint := "/environment-templates/" + environmenttemplateID
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

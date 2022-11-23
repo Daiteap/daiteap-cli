@@ -26,8 +26,8 @@ var workspaceDetailsCmd = &cobra.Command{
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		workspaceID, _ := cmd.Flags().GetString("workspace")
 		method := "GET"
-		endpoint := "/account/tenant/" + workspaceID
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		endpoint := "/tenants/" + workspaceID
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

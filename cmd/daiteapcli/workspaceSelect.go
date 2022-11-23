@@ -26,9 +26,9 @@ var workspaceSelectCmd = &cobra.Command{
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		workspaceID, _ := cmd.Flags().GetString("workspace")
 		method := "POST"
-		endpoint := "/selectTenant"
+		endpoint := "/user/select-tenant"
 		requestBody := "{\"selectedTenant\": \"" + workspaceID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "false", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

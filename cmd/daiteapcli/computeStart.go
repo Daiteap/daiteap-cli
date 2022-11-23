@@ -37,9 +37,8 @@ var computeStartCmd = &cobra.Command{
 		}
 
 		method := "POST"
-		endpoint := "/startCluster"
-		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		endpoint := "/clusters/" + clusterID + "/start"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

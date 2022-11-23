@@ -28,7 +28,7 @@ var projectCreateCmd = &cobra.Command{
 		method := "POST"
 		endpoint := "/projects"
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
-		_, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		_, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

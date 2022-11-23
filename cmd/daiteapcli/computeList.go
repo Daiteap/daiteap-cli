@@ -22,9 +22,9 @@ var computeListCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		outputFormat, _ := cmd.Flags().GetString("output")
-		method := "POST"
-		endpoint := "/getClusterList"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		method := "GET"
+		endpoint := "/clusters"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
