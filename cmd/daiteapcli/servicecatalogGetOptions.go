@@ -25,10 +25,9 @@ var servicecatalogGetOptionsCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		service, _ := cmd.Flags().GetString("service")
-		method := "POST"
-		endpoint := "/getServiceOptions"
-		requestBody := "{\"service\": \"" + service + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "GET"
+		endpoint := "/services/" + service + "/options"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

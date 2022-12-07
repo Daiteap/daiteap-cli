@@ -37,9 +37,8 @@ var k8sRestartCmd = &cobra.Command{
 		}
 
 		method := "POST"
-		endpoint := "/restartCluster"
-		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		endpoint := "/clusters/" + clusterID + "/restart"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

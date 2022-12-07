@@ -30,7 +30,7 @@ var projectUpdateCmd = &cobra.Command{
 		method := "PUT"
 		endpoint := "/projects/" + id
 		requestBody := "{\"name\": \"" + name + "\", \"description\": \"" + description + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

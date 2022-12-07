@@ -37,9 +37,8 @@ var computeCancelCmd = &cobra.Command{
 		}
 
 		method := "POST"
-		endpoint := "/cancelClusterCreation"
-		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		endpoint := "/clusters/" + clusterID + "/cancel-creation"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

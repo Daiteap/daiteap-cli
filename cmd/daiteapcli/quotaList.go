@@ -19,8 +19,8 @@ var quotaListCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		method := "GET"
-		endpoint := "/getusage"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		endpoint := "/quotas"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

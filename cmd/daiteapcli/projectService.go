@@ -15,7 +15,7 @@ import (
 func GetProjectID(name string) (string, error) {
     method := "GET"
     endpoint := "/projects"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", "false")
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", "false", "false")
 
     if err != nil {
         return "", err
@@ -42,9 +42,9 @@ func ListProjectK8s(cmd *cobra.Command) () {
         id, _ = GetProjectID(name)
     }
 
-    method := "POST"
-    endpoint := "/getClusterList"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+    method := "GET"
+	endpoint := "/clusters"
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
     if err != nil {
         fmt.Println(err)
@@ -218,9 +218,9 @@ func ListProjectCompute(cmd *cobra.Command) () {
         id, _ = GetProjectID(name)
     }
 
-    method := "POST"
-    endpoint := "/getClusterList"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+    method := "GET"
+	endpoint := "/clusters"
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
     if err != nil {
         fmt.Println(err)
@@ -371,7 +371,7 @@ func ListProjectStorage(cmd *cobra.Command) () {
 
     method := "GET"
     endpoint := "/buckets"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
     if err != nil {
         fmt.Println(err)
@@ -427,16 +427,16 @@ func ListProjectUsers(cmd *cobra.Command) () {
     verbose, _ := cmd.Flags().GetString("verbose")
     dryRun, _ := cmd.Flags().GetString("dry-run")
     outputFormat, _ := cmd.Flags().GetString("output")
-    method := "POST"
-    endpoint := "/get_project_userlist"
     id, _ := cmd.Flags().GetString("id")
     name, _ := cmd.Flags().GetString("name")
 
     if len(id) <= 1 {
         id, _ = GetProjectID(name)
     }
-    requestBody := "{\"project_id\": \"" + id + "\"}"
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+
+    method := "GET"
+    endpoint := "/projects/" + id + "/users"
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
     if err != nil {
         fmt.Println(err)

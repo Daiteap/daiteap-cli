@@ -25,10 +25,10 @@ var projectDeleteCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		id, _ := cmd.Flags().GetString("id")
-		method := "POST"
+		method := "DELETE"
 		endpoint := "/projects/" + id
 		requestBody := "{\"projectId\": \"" + id + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

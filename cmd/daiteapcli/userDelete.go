@@ -25,10 +25,9 @@ var userDeleteCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		username, _ := cmd.Flags().GetString("username")
-		method := "POST"
-		endpoint := "/delete_user"
-		requestBody := "{\"username\": \"" + username + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "DELETE"
+		endpoint := "/users/" + username
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

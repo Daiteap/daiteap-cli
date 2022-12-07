@@ -31,7 +31,7 @@ var servicecatalogInstallCmd = &cobra.Command{
 		clusterID, _ := cmd.Flags().GetString("cluster")
 		templatePath, _ := cmd.Flags().GetString("service-template")
 		method := "POST"
-		endpoint := "/addService"
+		endpoint := "/clusters/" + clusterID + "/services"
 
 		filename := strings.Split(templatePath, "/")[len(strings.Split(templatePath, "/"))-1]
 		dir := strings.Split(templatePath, filename)[0]
@@ -42,7 +42,7 @@ var servicecatalogInstallCmd = &cobra.Command{
 			return
 		}
 		requestBody := "{\"serviceName\": \"" + serviceName + "\", \"configurationType\": \"" + configurationType + "\", \"clusterID\": \"" + clusterID + "\"," + string(content) + "}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

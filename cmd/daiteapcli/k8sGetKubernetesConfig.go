@@ -19,8 +19,8 @@ var k8sGetKubernetesConfigCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		method := "GET"
-		endpoint := "/getsupporteddlcmv2configurations"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		endpoint := "/clusters/dlcmv2-supported-configurations"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

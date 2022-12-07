@@ -27,10 +27,9 @@ var servicecatalogGetConnectionCmd = &cobra.Command{
 		name, _ := cmd.Flags().GetString("name")
 		namespace, _ := cmd.Flags().GetString("namespace")
 		clusterID, _ := cmd.Flags().GetString("cluster")
-		method := "POST"
-		endpoint := "/getServiceConnectionInfo"
-		requestBody := "{\"name\": \"" + name + "\", \"namespace\": \"" + namespace + "\", \"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "GET"
+		endpoint := "/clusters/" + clusterID + "/services/" + name + "/" + namespace + "/connection-info"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

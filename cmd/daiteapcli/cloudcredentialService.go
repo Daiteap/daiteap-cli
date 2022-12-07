@@ -8,7 +8,7 @@ import (
 
 func ValidateCredentials(provider string, credentials map[string]interface{}) (bool, error) {
     method := "POST"
-    endpoint := "/validateCredentials"
+    endpoint := "/cloud-credentials/validate"
 
     workspace, err := GetCurrentWorkspace()
     if err != nil {
@@ -32,17 +32,16 @@ func ValidateCredentials(provider string, credentials map[string]interface{}) (b
         requestBody = "{\"credentials\": {\"azure\": {\"azure_tenant_id\": \"" + tenantID + "\", \"azure_subscription_id\": \"" + subscriptionID + "\", \"azure_client_id\": \"" + clientID + "\", \"azure_client_secret\": \"" + clientSecret + "\"}}, \"tenant_id\": \"" + workspace["id"] + "\"}"
     }
     
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "false", "false")
+    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", "false", "false")
     if err != nil {
         return false, err
     }
 
-    taskID := responseBody["taskId"]
-    endpoint = "/gettaskmessage"
-    requestBody = "{\"taskId\": \"" + taskID.(string) + "\"}"
+    method = "GET"
+    endpoint = "/task-message/" + responseBody["taskId"].(string)
     
     for i := 0; i < 20; i++ {
-        responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "false", "false")
+        responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", "false", "false")
         if err != nil {
             return false, err
         }

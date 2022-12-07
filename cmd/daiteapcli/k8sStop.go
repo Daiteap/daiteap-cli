@@ -37,9 +37,8 @@ var k8sStopCmd = &cobra.Command{
 		}
 
 		method := "POST"
-		endpoint := "/stopCluster"
-		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		endpoint := "/clusters/" + clusterID + "/stop"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

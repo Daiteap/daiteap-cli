@@ -158,7 +158,7 @@ func Logout() error {
 	return nil
 }
 
-func SendDaiteapRequest(method string, endpoint string, requestBody string, verbose string, dryRun string) (map[string]interface{}, error) {
+func SendDaiteapRequest(method string, endpoint string, requestBody string, tenant string, verbose string, dryRun string) (map[string]interface{}, error) {
 	var resp *http.Response
 	var responseBody []byte
 	emptyResponseBody := make(map[string]interface{})
@@ -174,6 +174,14 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string, verb
 	}
 
 	daiteapServerURL := authConfig.ServerURL + "/server"
+	if tenant == "true" {
+		workspace, err := getActiveWorkspace()
+		if err != nil {
+			err := fmt.Errorf("Error getting selected workspace. Please try logging in again.")
+			return emptyResponseBody, err
+		}
+		daiteapServerURL = daiteapServerURL + "/tenants/" + workspace
+	}
 	URL := fmt.Sprintf("%v"+endpoint, daiteapServerURL)
 
 	request, err := http.NewRequest(method, URL, strings.NewReader(requestBody))
@@ -226,6 +234,19 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string, verb
 		}
 	} else {
 		return emptyResponseBody, err
+	}
+}
+
+func getActiveWorkspace() (string, error) {
+	method := "GET"
+	endpoint := "/user/active-tenants"
+	responseBody, err := SendDaiteapRequest(method, endpoint, "", "false", "false", "false")
+
+	if err != nil {
+		return "", err
+	} else {
+		workspace := fmt.Sprint(responseBody["selectedTenant"])
+		return workspace, nil
 	}
 }
 

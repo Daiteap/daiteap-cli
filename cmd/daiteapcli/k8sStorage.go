@@ -36,10 +36,9 @@ var k8sStorageCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		method := "POST"
-		endpoint := "/getClusterStorage"
-		requestBody := "{\"clusterID\": \"" + clusterID + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		method := "GET"
+		endpoint := "/clusters/" + clusterID + "/storage"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

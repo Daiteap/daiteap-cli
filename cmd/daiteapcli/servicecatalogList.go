@@ -18,9 +18,9 @@ var servicecatalogListCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
-		method := "POST"
-		endpoint := "/getServiceList"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", verbose, dryRun)
+		method := "GET"
+		endpoint := "/services"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)

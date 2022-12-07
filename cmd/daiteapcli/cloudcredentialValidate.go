@@ -27,27 +27,20 @@ var cloudcredentialValidateCmd = &cobra.Command{
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
 		cloudcredentialID, _ := cmd.Flags().GetString("cloudcredential")
+
 		method := "POST"
-		endpoint := "/validateCredentials"
+		endpoint := "/cloud-credentials/" + cloudcredentialID + "/validate"
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
 
-		workspace, err := GetCurrentWorkspace()
-		if err != nil {
-			fmt.Println("Error getting current workspace")
-			os.Exit(0)
-		}
-
-		requestBody := "{\"account_id\": " + cloudcredentialID + ", \"tenant_id\": \"" + workspace["id"] + "\"}"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(0)
 		} else if dryRun != "false" {
-			taskID := responseBody["taskId"]
-			endpoint = "/gettaskmessage"
-			requestBody = "{\"taskId\": \"" + taskID.(string) + "\"}"
+			method = "GET"
+    		endpoint = "/task-message/" + responseBody["taskId"].(string)
 			
 			for i := 0; i < 20; i++ {
-				responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, "false")
+				responseBody, err = daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", verbose, "false")
 				if err != nil {
 					fmt.Println(err)
 					os.Exit(0)

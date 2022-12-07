@@ -99,7 +99,7 @@ var cloudcredentialCreateCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, verbose, dryRun)
+		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)
 
 		if err != nil {
 			fmt.Println(err)
