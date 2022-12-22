@@ -38,7 +38,7 @@ var environmenttemplateListCmd = &cobra.Command{
 				columnFmt := color.New(color.FgYellow).SprintfFunc()
 				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
-				for _, template := range responseBody["environmentTemplates"].([]interface{}) {
+				for _, template := range responseBody["data"].([]interface{}) {
 					templateObject := template.(map[string]interface{})
 					providers := strings.ReplaceAll(templateObject["providers"].(string), "[", "")
 					providers = strings.ReplaceAll(providers, "]", "")
@@ -64,7 +64,7 @@ var environmenttemplateListCmd = &cobra.Command{
 					case 7:
 						environmentType = "DLCMv2"
 					default:
-						environmentType = "Compute (VM)"
+						environmentType = "Compute (VMs)"
 					}
 					tbl.AddRow(templateObject["id"], templateObject["name"], templateObject["description"], providers, environmentType, templateObject["created_at"], templateObject["contact"])
 				}
@@ -76,7 +76,7 @@ var environmenttemplateListCmd = &cobra.Command{
 				columnFmt := color.New(color.FgYellow).SprintfFunc()
 				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
-				for _, template := range responseBody["environmentTemplates"].([]interface{}) {
+				for _, template := range responseBody["data"].([]interface{}) {
 					templateObject := template.(map[string]interface{})
 					providers := strings.ReplaceAll(templateObject["providers"].(string), "[", "")
 					providers = strings.ReplaceAll(providers, "]", "")
@@ -102,7 +102,7 @@ var environmenttemplateListCmd = &cobra.Command{
 					case 7:
 						environmentType = "DLCMv2"
 					default:
-						environmentType = "Compute (VM)"
+						environmentType = "Compute (VMs)"
 					}
 					tbl.AddRow(templateObject["name"], templateObject["description"], providers, environmentType, templateObject["created_at"], templateObject["contact"])
 				}
