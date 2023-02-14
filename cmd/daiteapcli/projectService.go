@@ -58,7 +58,7 @@ func ListProjectK8s(cmd *cobra.Command) () {
                 3,
                 5,
                 7:
-                if clusterObject["project"] == id {
+                if clusterObject["project_id"] == id || clusterObject["project_name"] == name {
                     clusterArray["data"] = append(clusterArray["data"], clusterObject)
                 }
             }
@@ -232,7 +232,7 @@ func ListProjectCompute(cmd *cobra.Command) () {
             case
                 2,
                 6:
-                if clusterObject["project"] == id {
+                if clusterObject["project_id"] == id || clusterObject["project_name"] == name {
                     clusterArray["data"] = append(clusterArray["data"], clusterObject)
                 }
             }
@@ -377,15 +377,19 @@ func ListProjectStorage(cmd *cobra.Command) () {
         fmt.Println(err)
     } else if dryRun == "false" {
         storageArray := make(map[string][]interface{})
-        for _, cluster := range responseBody["data"].([]interface{}) {
-            storageObject := cluster.(map[string]interface{})
-            switch storageObject["type"].(float64) {
-            case
-                2,
-                6:
-                if storageObject["project"] == id {
-                    storageArray["data"] = append(storageArray["data"], storageObject)
-                }
+        for _, bucket := range responseBody["data"].([]interface{}) {
+            storageObject := bucket.(map[string]interface{})
+
+            storageObjectProject := storageObject["project"].(map[string]interface{})
+            storageObject["project_id"] = storageObjectProject["id"]
+            storageObject["project_name"] = storageObjectProject["name"]
+
+            storageObjectCredential := storageObject["credential"].(map[string]interface{})
+            storageObject["credential_id"] = storageObjectCredential["id"]
+            storageObject["credential_label"] = storageObjectCredential["label"]
+
+            if storageObject["project_id"] == id || storageObject["project_name"] == name {
+                storageArray["data"] = append(storageArray["data"], storageObject)
             }
         }
 
@@ -393,7 +397,7 @@ func ListProjectStorage(cmd *cobra.Command) () {
             output, _ := json.MarshalIndent(storageArray, "", "    ")
             fmt.Println(string(output))
         } else if outputFormat == "wide" {
-            tbl := table.New("ID", "Name", "Cloud", "Project", "Credential", "Created At")
+            tbl := table.New("ID", "Name", "Project", "Cloud", "Credential", "Created At")
             headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
             columnFmt := color.New(color.FgYellow).SprintfFunc()
             tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
@@ -401,12 +405,12 @@ func ListProjectStorage(cmd *cobra.Command) () {
             for _, bucket := range storageArray["data"] {
                 bucketObject := bucket.(map[string]interface{})
 
-                tbl.AddRow(bucketObject["id"], bucketObject["name"], bucketObject["provider"], bucketObject["project"], bucketObject["credential"], bucketObject["created_at"])
+                tbl.AddRow(bucketObject["id"], bucketObject["name"], bucketObject["project_name"], bucketObject["provider"], bucketObject["credential_label"], bucketObject["created_at"])
             }
 
             tbl.Print()
         } else {
-            tbl := table.New("Name", "Cloud", "Project", "Credential", "Created At")
+            tbl := table.New("Name", "Project", "Cloud", "Credential", "Created At")
             headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
             columnFmt := color.New(color.FgYellow).SprintfFunc()
             tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
@@ -414,7 +418,7 @@ func ListProjectStorage(cmd *cobra.Command) () {
             for _, bucket := range storageArray["data"] {
                 bucketObject := bucket.(map[string]interface{})
 
-                tbl.AddRow(bucketObject["name"], bucketObject["provider"], bucketObject["project"], bucketObject["credential"], bucketObject["created_at"])
+                tbl.AddRow(bucketObject["name"], bucketObject["project_name"], bucketObject["provider"], bucketObject["credential_label"], bucketObject["created_at"])
             }
 
             tbl.Print()
