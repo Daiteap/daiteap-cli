@@ -2,8 +2,8 @@ package daiteapcli
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -34,11 +34,11 @@ var cloudcredentialCreateCmd = &cobra.Command{
 			checkForRequiredFlags(requiredFlags, cmd)
 		} else {
 			fmt.Println("Invalid provider parameter. Valid parameter values are \"google\", \"aws\" and \"azure\"")
-			printHelpAndExit(cmd)
+			DaiteapCliPrintHelpAndExit(cmd)
 		}
 
-        return nil
-    },
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")

@@ -2,11 +2,26 @@ package daiteapcli
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
+
+func RunServicecatalogGetOptionsCmd(cmd *cobra.Command, args []string) {
+	verbose, _ := cmd.Flags().GetString("verbose")
+	dryRun, _ := cmd.Flags().GetString("dry-run")
+	service, _ := cmd.Flags().GetString("service")
+	method := "GET"
+	endpoint := "/services/" + service + "/options"
+	responseBody, err := daiteapcli.DaiteapcliSendDaiteapRequest(method, endpoint, "", "false", verbose, dryRun)
+
+	if err != nil {
+		daiteapcli.FmtPrintln(err)
+	} else if dryRun == "false" {
+		output, _ := json.MarshalIndent(responseBody, "", "    ")
+		daiteapcli.FmtPrintln(string(output))
+	}
+}
 
 var servicecatalogGetOptionsCmd = &cobra.Command{
 	SilenceUsage:  true,
@@ -19,23 +34,9 @@ var servicecatalogGetOptionsCmd = &cobra.Command{
 		requiredFlags := []string{"service"}
 		checkForRequiredFlags(requiredFlags, cmd)
 
-        return nil
-    },
-	Run: func(cmd *cobra.Command, args []string) {
-		verbose, _ := cmd.Flags().GetString("verbose")
-		dryRun, _ := cmd.Flags().GetString("dry-run")
-		service, _ := cmd.Flags().GetString("service")
-		method := "GET"
-		endpoint := "/services/" + service + "/options"
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "false", verbose, dryRun)
-
-		if err != nil {
-			fmt.Println(err)
-		} else if dryRun == "false" {
-			output, _ := json.MarshalIndent(responseBody, "", "    ")
-			fmt.Println(string(output))
-		}
+		return nil
 	},
+	Run: RunServicecatalogGetOptionsCmd,
 }
 
 func init() {

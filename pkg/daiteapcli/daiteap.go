@@ -10,6 +10,8 @@ import (
 	"strings"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli/authUtils"
+	"github.com/fatih/color"
+	"github.com/rodaine/table"
 )
 
 func GetActiveToken() (string, error) {
@@ -89,7 +91,7 @@ func Login() error {
 		return err
 	}
 
-	if authConfig.SingleUser == "true"{
+	if authConfig.SingleUser == "true" {
 		fmt.Println("Single user mode: No login required.")
 		return nil
 	}
@@ -131,7 +133,7 @@ func Logout() error {
 		return err
 	}
 
-	if authConfig.SingleUser == "true"{
+	if authConfig.SingleUser == "true" {
 		fmt.Println("Single user mode: No login required.")
 		return nil
 	}
@@ -156,6 +158,19 @@ func Logout() error {
 
 	fmt.Println("Successfully Logged Out.")
 	return nil
+}
+
+var FmtPrintln = fmt.Println
+var JsonMarshalIndent = json.MarshalIndent
+var DaiteapCliColorNew = color.New
+var DaiteapcliSendDaiteapRequest = SendDaiteapRequest
+
+var TableNew = table.New
+var TablePrint = func(t table.Table) {
+	t.Print()
+}
+var TableAddRow = func(t table.Table, row ...interface{}) {
+	t.AddRow(row...)
 }
 
 func SendDaiteapRequest(method string, endpoint string, requestBody string, tenant string, verbose string, dryRun string) (map[string]interface{}, error) {
@@ -185,13 +200,13 @@ func SendDaiteapRequest(method string, endpoint string, requestBody string, tena
 	URL := fmt.Sprintf("%v"+endpoint, daiteapServerURL)
 
 	request, err := http.NewRequest(method, URL, strings.NewReader(requestBody))
-	if authConfig.SingleUser == "false"{
+	if authConfig.SingleUser == "false" {
 		token, err := GetActiveToken()
 		if err != nil {
 			return emptyResponseBody, err
 		}
 		request.Header.Set("Authorization", token)
-		request.Header.Set("Content-type", "application/json")	
+		request.Header.Set("Content-type", "application/json")
 	}
 
 	if dryRun != "false" {
@@ -315,12 +330,12 @@ func GetUsername() (string, error) {
 
 	encodedTokenPayload := strings.Split(accessToken, ".")[1]
 	if len(encodedTokenPayload)%4 == 3 {
-        encodedTokenPayload += "="
-    } else if len(encodedTokenPayload)%4 == 2 {
-        encodedTokenPayload += "=="
-    } else if len(encodedTokenPayload)%4 == 1 {
-        encodedTokenPayload += "==="
-    }
+		encodedTokenPayload += "="
+	} else if len(encodedTokenPayload)%4 == 2 {
+		encodedTokenPayload += "=="
+	} else if len(encodedTokenPayload)%4 == 1 {
+		encodedTokenPayload += "==="
+	}
 
 	payload, _ := base64.StdEncoding.DecodeString(encodedTokenPayload)
 
@@ -331,7 +346,7 @@ func GetUsername() (string, error) {
 	return username, nil
 }
 
-func UpdateConfig(serverURL string, singleUser string) (error) {
+func UpdateConfig(serverURL string, singleUser string) error {
 	var cfg *authUtils.IConfig = &authUtils.IConfig{
 		AccessToken:  "",
 		RefreshToken: "",
