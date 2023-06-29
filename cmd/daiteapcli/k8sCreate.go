@@ -30,7 +30,7 @@ var k8sCreateCmd = &cobra.Command{
 				azureCredential, _ := cmd.Flags().GetString("azure-credential")
 				if len(googleCredential) == 0 && len(awsCredential) == 0 && len(azureCredential) == 0 {
 					fmt.Println("Missing or invalid credential parameter")
-					printHelpAndExit(cmd)
+					DaiteapCliPrintHelpAndExit(cmd)
 				}
 
 				if len(googleCredential) > 0 {
@@ -50,16 +50,16 @@ var k8sCreateCmd = &cobra.Command{
 				projectName, _ := cmd.Flags().GetString("projectName")
 				if len(projectID) == 0 && len(projectName) == 0 {
 					fmt.Println("Missing or invalid project parameter")
-					printHelpAndExit(cmd)
+					DaiteapCliPrintHelpAndExit(cmd)
 				}
 			}
 		} else {
 			fmt.Println("Missing or invalid lcm parameter")
-			printHelpAndExit(cmd)
+			DaiteapCliPrintHelpAndExit(cmd)
 		}
 
 		return nil
-    },
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		lcm, _ := cmd.Flags().GetString("lcm")
 

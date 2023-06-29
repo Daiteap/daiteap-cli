@@ -18,11 +18,11 @@ var projectGetCmd = &cobra.Command{
 		name, _ := cmd.Flags().GetString("name")
 		if len(id) == 0 && len(name) == 0 {
 			fmt.Println("Missing or invalid project parameter")
-			printHelpAndExit(cmd)
+			DaiteapCliPrintHelpAndExit(cmd)
 		}
 
-        return nil
-    },
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Kubernetes Clusters")
 		ListProjectK8s(cmd)

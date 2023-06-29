@@ -22,7 +22,7 @@ var configSetCmd = &cobra.Command{
 		if len(singleUser) != 0 {
 			if singleUser != "false" && singleUser != "true" {
 				fmt.Println("Invalid single-user parameter")
-				printHelpAndExit(cmd)
+				DaiteapCliPrintHelpAndExit(cmd)
 			}
 		}
 

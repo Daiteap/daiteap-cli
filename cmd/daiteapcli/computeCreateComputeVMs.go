@@ -3,10 +3,10 @@ package daiteapcli
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 	"io/ioutil"
-	"strconv"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
@@ -31,7 +31,7 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 			azureCredential, _ := cmd.Flags().GetString("azure-credential")
 			if len(googleCredential) == 0 && len(awsCredential) == 0 && len(azureCredential) == 0 {
 				fmt.Println("Missing or invalid credential parameter")
-				printHelpAndExit(cmd)
+				DaiteapCliPrintHelpAndExit(cmd)
 			}
 
 			if len(googleCredential) > 0 {
@@ -51,12 +51,12 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 			projectName, _ := cmd.Flags().GetString("projectName")
 			if len(projectID) == 0 && len(projectName) == 0 {
 				fmt.Println("Missing or invalid project parameter")
-				printHelpAndExit(cmd)
+				DaiteapCliPrintHelpAndExit(cmd)
 			}
 		}
 
 		return nil
-    },
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		verbose, _ := cmd.Flags().GetString("verbose")
 		dryRun, _ := cmd.Flags().GetString("dry-run")
@@ -221,7 +221,7 @@ var computeCreateComputeVMsCmd = &cobra.Command{
 			jsonBody, _ := json.Marshal(body)
 			requestBody = string(jsonBody)
 		}
-		
+
 		method := "POST"
 		endpoint := "/clusters/compute-create"
 		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, requestBody, "true", verbose, dryRun)

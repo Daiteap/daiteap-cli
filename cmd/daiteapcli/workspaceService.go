@@ -1,24 +1,37 @@
 package daiteapcli
 
 import (
-    "github.com/Daiteap/daiteapcli/pkg/daiteapcli"
+	"errors"
+
+	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 )
 
 func GetCurrentWorkspace() (map[string]string, error) {
-    method := "GET"
-    endpoint := ""
-    responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", "false", "false")
+	method := "GET"
+	endpoint := ""
+	responseBody, err := daiteapcli.DaiteapcliSendDaiteapRequest(method, endpoint, "", "true", "false", "false")
 
-    workspace := make(map[string]string)
+	if err != nil {
+		return nil, err
+	}
 
-    if err != nil {
-        return workspace, err
-    }
+	tenantObj, ok := responseBody["tenant"].(map[string]interface{})
+	if !ok {
+		return nil, errors.New("Missing or invalid tenant field in response")
+	}
 
-    responseObject := responseBody["tenant"].(map[string]interface{})
+	id, ok := tenantObj["id"].(string)
+	if !ok {
+		return nil, errors.New("Missing or invalid id field in tenant object")
+	}
 
-    workspace["id"] = responseObject["id"].(string)
-    workspace["name"] = responseObject["name"].(string)
-    
-    return workspace, nil
+	name, ok := tenantObj["name"].(string)
+	if !ok {
+		return nil, errors.New("Missing or invalid name field in tenant object")
+	}
+
+	return map[string]string{
+		"id":   id,
+		"name": name,
+	}, nil
 }

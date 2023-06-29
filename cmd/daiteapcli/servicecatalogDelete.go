@@ -2,11 +2,28 @@ package daiteapcli
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/Daiteap/daiteapcli/pkg/daiteapcli"
 	"github.com/spf13/cobra"
 )
+
+func RunServicecatalogDeleteCmd(cmd *cobra.Command, args []string) {
+	verbose, _ := cmd.Flags().GetString("verbose")
+	dryRun, _ := cmd.Flags().GetString("dry-run")
+	name, _ := cmd.Flags().GetString("name")
+	namespace, _ := cmd.Flags().GetString("namespace")
+	clusterID, _ := cmd.Flags().GetString("cluster")
+	method := "DELETE"
+	endpoint := "/clusters/" + clusterID + "/services/" + name + "/" + namespace
+	responseBody, err := daiteapcli.DaiteapcliSendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
+
+	if err != nil {
+		daiteapcli.FmtPrintln(err)
+	} else if dryRun == "false" {
+		output, _ := json.MarshalIndent(responseBody, "", "    ")
+		daiteapcli.FmtPrintln(string(output))
+	}
+}
 
 var servicecatalogDeleteCmd = &cobra.Command{
 	SilenceUsage:  true,
@@ -19,25 +36,9 @@ var servicecatalogDeleteCmd = &cobra.Command{
 		requiredFlags := []string{"name", "namespace", "cluster"}
 		checkForRequiredFlags(requiredFlags, cmd)
 
-        return nil
-    },
-	Run: func(cmd *cobra.Command, args []string) {
-		verbose, _ := cmd.Flags().GetString("verbose")
-		dryRun, _ := cmd.Flags().GetString("dry-run")
-		name, _ := cmd.Flags().GetString("name")
-		namespace, _ := cmd.Flags().GetString("namespace")
-		clusterID, _ := cmd.Flags().GetString("cluster")
-		method := "DELETE"
-		endpoint := "/clusters/" + clusterID + "/services/" + name + "/" + namespace
-		responseBody, err := daiteapcli.SendDaiteapRequest(method, endpoint, "", "true", verbose, dryRun)
-
-		if err != nil {
-			fmt.Println(err)
-		} else if dryRun == "false" {
-			output, _ := json.MarshalIndent(responseBody, "", "    ")
-			fmt.Println(string(output))
-		}
+		return nil
 	},
+	Run: RunServicecatalogDeleteCmd,
 }
 
 func init() {
