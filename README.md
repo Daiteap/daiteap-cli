@@ -89,3 +89,8 @@ Run this command in the root directory of the repository
 go build
 ```
 
+## Running tests
+```sh
+go test -v ./...
+```
+
