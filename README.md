@@ -112,23 +112,14 @@ code .
 
 - Attach VSCode to the running devcontainer
 
-### Build CLI
+### Build & Install CLI
 
-This command is already executed once when the devcontainer is created.
-Execute it again whenever you make changes to the code.
+These commands are already executed once when the devcontainer is created.
+Execute them again whenever you make changes to the code.
 
 ```bash
 go build
-```
-
-### Usage
-
-You can use the CLI with: `./daiteapcli`.
-
-To be able to use it with just `daiteapcli`, set `PATH`:
-
-```bash
-export PATH=$PATH:/workspaces/daiteap-cli 
+go install
 ```
 
 ### Configuration

@@ -12,5 +12,5 @@
     },
     // Use 'postCreateCommand' to run commands after the container is created.
     // xdg-utils is necessary for opening a browser on login command.
-    "postCreateCommand": "sudo apt update && sudo apt install xdg-utils -y && go build"
+    "postCreateCommand": "sudo apt update && sudo apt install xdg-utils -y && go build && go install"
 }
