@@ -16,9 +16,9 @@ daiteapcli offers one interface to IaaS cloud provider and cloud platforms to sp
 
 ## Installation
 
-To install the tool without building the binary execute this command
+To install the tool without building the binary execute this command:
 
-```
+```bash
 go install github.com/Daiteap/daiteapcli@latest
 ```
 
@@ -26,13 +26,16 @@ go install github.com/Daiteap/daiteapcli@latest
 
 Run `daiteapcli --help` for a list of available commands.
 
-### commands
-Login
+### Commands
+
+- Login:
+
 ```shell
 daiteapcli login
 ```
 
-Create cloud credential for AWS
+- Create cloud credential for AWS:
+
 ```shell
 daiteapcli cloud-credentials create --aws-access-key-id ACCESS_KEY_D \
 --aws-secret-access-key ACCESS_KEY\
@@ -42,12 +45,14 @@ daiteapcli cloud-credentials create --aws-access-key-id ACCESS_KEY_D \
 --provider aws
 ```
 
-Create a prioject
+- Create a project:
+
 ```shell
 daiteapcli projects create --name FirstProject --description "Desc"
 ```
 
-Create Kubernetes cluster across 2 providers **GCP** and **Azure**
+- Create Kubernetes cluster across 2 providers **GCP** and **Azure**:
+
 ```shell
 daiteapcli k8s create-dlcmv2 \ 
   --project bb893a8a-1f42-432c-bd7b-60361f49433b \
@@ -61,7 +66,8 @@ daiteapcli k8s create-dlcmv2 \
   --azure-region 'us-east-1'
 ```
 
-Create 5-node Compute cluster across **GCP** and **AWS**
+- Create 5-node Compute cluster across **GCP** and **AWS**:
+
 ```shell
 daiteapcli compute create-compute-vms \
     --name "Multicloud_compute_cluster"
@@ -78,19 +84,59 @@ daiteapcli compute create-compute-vms \
     --google-operating-system debian \
     --google-region us-east \
     --google-zone us-east-2
-
 ```
 
-## Build instructions
+## Development Environment
 
-Run this command in the root directory of the repository
+### Start Devcontainer
 
+There are 2 ways to start the devcontainer.
+
+From VS Code:
+
+- Install Dev Containers extension in VS Code
+- From Remote Explorer tab -> Dev Containers -> + New Dev Container
+  -> Open Current Folder in Container
+
+From Terminal:
+
+- Install `devcontainers`
+- Execute
+
+```bash
+# start devcontainer
+devcontainer up --workspace-folder .
+# start vscode
+code .
 ```
+
+- Attach VSCode to the running devcontainer
+
+### Build & Install CLI
+
+These commands are already executed once when the devcontainer is created.
+Execute them again whenever you make changes to the code.
+
+```bash
 go build
+go install
 ```
 
-## Running tests
-```sh
+### Configuration
+
+If you want to connect the CLI to your local platform, use the command below
+and replace `local_url` with the URL of your frontend.
+
+For the `daiteap-platform` devcontainer the default is <http://localhost:8083>,
+you will also need to edit - in Keycloak -> Realm Daiteap
+-> Realm Settings -> Frontend URL = <http://localhost:8083/auth/>
+
+```bash
+daiteapcli config set --url local_url
+```
+
+### Run Tests
+
+```bash
 go test -v ./...
 ```
-
